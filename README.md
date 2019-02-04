@@ -1,4 +1,4 @@
-# Mason Quickie
+# Patriot Planner
 A webpage to optimize a George Mason University student's study and eating schedule taking travel time into account.
 
 ## Authors
