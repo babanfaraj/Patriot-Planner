@@ -2,8 +2,8 @@
 
 CREATE TABLE locations (
     locationName VARCHAR(25),
-    x FLOAT NOT NULL,
-    y FLOAT NOT NULL,
+    latitude FLOAT NOT NULL,
+    longitude FLOAT NOT NULL,
     isActive BOOLEAN NOT NULL,
     isStudyLocation BOOLEAN NOT NULL,
     isParkingLot BOOLEAN NOT NULL,
@@ -20,7 +20,6 @@ CREATE TABLE student (
 CREATE TABLE edges (
     location1 VARCHAR(25),
     location2 VARCHAR(25),
-    distance FLOAT NOT NULL,
     FOREIGN KEY (location1)
         REFERENCES locations(locationName),
     FOREIGN KEY (location2)
@@ -52,7 +51,7 @@ CREATE TABLE schedule (
     PRIMARY KEY (studentEmail, year, semester, className)
 );
 
-CREATE TABLE study_time (
+CREATE TABLE studyTime (
     studentEmail VARCHAR(50),
     weeklyHours FLOAT NOT NULL,
     minContHours FLOAT NOT NULL,
@@ -61,4 +60,6 @@ CREATE TABLE study_time (
         REFERENCES student(email),
     PRIMARY KEY (studentEmail)
 );
+
+INSERT INTO student VALUES ('cguerra5@masonlive.gmu.edu', 'Carlos', 'Guerra');
 
