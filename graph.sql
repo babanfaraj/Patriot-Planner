@@ -1,3 +1,6 @@
+-- Inserts all the locations (nodes) in the graph that represents the locations
+-- a student can travel to. It also inserts all the paths (edges) that a
+-- student can take to get to each location
 
 INSERT INTO locations VALUES ('Planetary Hall 1', 38.829881, -77.306483, TRUE, TRUE, FALSE);
 INSERT INTO locations VALUES ('Johnson Center 1', 38.829980, -77.306815, TRUE, TRUE, FALSE);
