@@ -44,4 +44,6 @@ cmake_install.cmake
 # Project Specific (AWS)
 *.pem
 *.txt
+db_login.txt
+MyEC2KeyPair.pem
 

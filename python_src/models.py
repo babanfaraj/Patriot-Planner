@@ -8,7 +8,6 @@ class Location(db.Model):
     location_name = db.Column(db.String(25), primary_key=True)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    is_active = db.Column(db.Boolean, nullable=False)
     is_study_location = db.Column(db.Boolean, nullable=False)
     is_parking_lot = db.Column(db.Boolean, nullable=False)
 
@@ -61,6 +60,7 @@ class Edge(db.Model):
                           primary_key=True)
     location2 = db.Column(db.String(25), db.ForeignKey('location.location_name'),
                           primary_key=True)
+    is_active = db.Column(db.Boolean, nullable=False)
 
     def __repr__(self):
         rep = 'Edge(location1={}, location2={})'

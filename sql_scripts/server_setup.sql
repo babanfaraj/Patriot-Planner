@@ -4,7 +4,6 @@ CREATE TABLE location (
     location_name VARCHAR(25),
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
-    is_active BOOLEAN NOT NULL,
     is_study_location BOOLEAN NOT NULL,
     is_parking_lot BOOLEAN NOT NULL,
     PRIMARY KEY (location_name)
@@ -21,6 +20,7 @@ CREATE TABLE student (
 CREATE TABLE edge (
     location1 VARCHAR(25),
     location2 VARCHAR(25),
+    is_active BOOLEAN NOT NULL,
     FOREIGN KEY (location1)
         REFERENCES location(location_name),
     FOREIGN KEY (location2)

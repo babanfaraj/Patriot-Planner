@@ -1,6 +1,7 @@
 import matplotlib.pylab as plt
 
 from python_src import db_connection as db_conn
+from python_src.models import Edge
 
 
 def visualize_map():
@@ -17,6 +18,16 @@ def visualize_map():
             x2, y2 = child_node.coords()
             ax1.plot(x2, y2, 'ro')
             ax1.annotate(child_node.location_name, (x2, y2))
-            ax1.plot([x1, x2], [y1, y2], 'k-')
+            e = Edge.query.filter_by(location1=parent_node[0].location_name,
+                                     location2=child_node.location_name).all()
+            if len(e) == 0:
+                e = Edge.query.filter_by(
+                    location1=child_node.location_name,
+                    location2=parent_node[0].location_name).all()
+            # Plot active edges with green lines and inactive with red lines
+            if e[0].is_active:
+                ax1.plot([x1, x2], [y1, y2], 'g-')
+            else:
+                ax1.plot([x1, x2], [y1, y2], 'r-')
     plt.show()
 
