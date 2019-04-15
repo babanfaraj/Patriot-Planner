@@ -30,10 +30,10 @@ CREATE TABLE edge (
 
 CREATE TABLE restaurant (
     location VARCHAR(25),
-    resturant_name VARCHAR(25) NOT NULL,
+    resturant_name VARCHAR(25),
     FOREIGN KEY (location)
         REFERENCES location(location_name),
-    PRIMARY KEY (location)
+    PRIMARY KEY (location, resturant_name)
 );
 
 CREATE TABLE schedule (
