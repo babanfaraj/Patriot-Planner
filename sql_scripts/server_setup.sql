@@ -14,6 +14,7 @@ CREATE TABLE student (
     email VARCHAR(50),
     first_name VARCHAR(25) NOT NULL,
     last_name VARCHAR(25) NOT NULL,
+    password VARCHAR(25) NOT NULL,
     PRIMARY KEY (email)
 );
 
@@ -61,5 +62,5 @@ CREATE TABLE study_time (
     PRIMARY KEY (student_email)
 );
 
-INSERT INTO student VALUES ('cguerra5@masonlive.gmu.edu', 'Carlos', 'Guerra');
+INSERT INTO student VALUES ('cguerra5@masonlive.gmu.edu', 'Carlos', 'Guerra', 'password');
 
