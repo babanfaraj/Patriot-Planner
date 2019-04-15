@@ -1,0 +1,1 @@
+mysql://admin:cs321team8@patriotplanner.cbapdh6bqoz9.us-east-1.rds.amazonaws.com:3306/patriotplanner

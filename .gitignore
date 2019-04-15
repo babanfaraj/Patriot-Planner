@@ -43,4 +43,5 @@ cmake_install.cmake
 
 # Project Specific (AWS)
 *.pem
+*.txt
 
