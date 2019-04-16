@@ -3,11 +3,20 @@ import geopy.distance
 from python_src import db
 
 
+class Building(db.Model):
+    __tablename__ = 'building'
+    building_name = db.Column(db.String(50), primary_key=True)
+
+    def __repr__(self):
+        return 'Building({})'.format(self.building_name)
+
+
 class Location(db.Model):
     __tablename__ = 'location'
     location_name = db.Column(db.String(25), primary_key=True)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
+    building = db.Column(db.String(50), primary_key=True)
     is_study_location = db.Column(db.Boolean, nullable=False)
     is_parking_lot = db.Column(db.Boolean, nullable=False)
 
@@ -39,9 +48,10 @@ class Location(db.Model):
 
     def __repr__(self):
         rep = ('Location(location_name={}, latitude={}, longitude={}, '
-               + 'is_study_location={}, is_parking_lot={})')
+               + 'building = {}, is_study_location={}, is_parking_lot={})')
         return rep.format(self.location_name, self.latitude, self.longitude,
-                          self.is_study_location, self.is_parking_lot)
+                          self.building, self.is_study_location,
+                          self.is_parking_lot)
 
 
 class Student(db.Model):
@@ -76,33 +86,33 @@ class Edge(db.Model):
 
 class Restaurant(db.Model):
     __tablename__ = 'resturant'
-    location = db.Column(db.String(25), db.ForeignKey('location.location_name'),
+    building = db.Column(db.String(25), db.ForeignKey('building.building_name'),
                          primary_key=True)
     restaurant_name = db.Column(db.String(25), primary_key=True)
 
     def __repr__(self):
-        rep = 'Restaurant(location={}, restaurant_name={})'
+        rep = 'Restaurant(building={}, restaurant_name={})'
         return rep.format(self.location, self.restaurant_name)
 
 
-class Schedule(db.Model):
-    __tablename__ = 'schedule'
+class ClassTime(db.Model):
+    __tablename__ = 'class_time'
     student_email = db.Column(db.String(50), db.ForeignKey('student.email'),
                               primary_key=True)
-    year = db.Column(db.Char(4), primary_key=True)
+    year = db.Column(db.String(4), primary_key=True)
     semester = db.Column(db.String(7), primary_key=True)
     class_name = db.Column(db.String(25), primary_key=True)
-    location = db.Column(db.String(25), db.ForeignKey('location.location_name'))
+    building = db.Column(db.String(25), db.ForeignKey('building.building_name'))
     start_time = db.Column(db.Time, nullable=False)
     end_time = db.Column(db.Time, nullable=False)
     week_days = db.Column(db.String(7))
 
     def __repr__(self):
         rep = ('Schedule(student_email={}, year={}, semester={}, '
-               + 'class_name={}, location={}, start_time={}, '
+               + 'class_name={}, building={}, start_time={}, '
                + 'end_time={}, week_days={})')
         return rep.format(self.student_email, self.year, self.semester,
-                          self.class_name, self.location, self.start_time,
+                          self.class_name, self.building, self.start_time,
                           self.end_time, self.week_days)
 
 
