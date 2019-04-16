@@ -7,6 +7,9 @@ class Building(db.Model):
     __tablename__ = 'building'
     building_name = db.Column(db.String(50), primary_key=True)
 
+    def entrances(self):
+        return Location.query.filter_as(building=self.building_name).all()
+
     def __repr__(self):
         return 'Building({})'.format(self.building_name)
 
@@ -60,6 +63,12 @@ class Student(db.Model):
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(25), nullable=False)
+
+    def all_classes(self):
+        """Returns all the classes associated with a student
+        :rtype: List[ClassTime]
+        """
+        return ClassTime.query.filter_as(email=self.email).all()
 
     def __repr__(self):
         # Don't print the user's password when __repr__ is called

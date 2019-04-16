@@ -1,9 +1,11 @@
-from python_src.models import Location, Student, Edge
+from python_src.models import Location, Student, Edge, Building
+from python_src import db
 
 
 def get_graph():
-    """Gets the graph of active paths on the mason campus
-    :return:
+    """Gets the graph of active paths on the mason campus.
+    :return: An adjacency list of the active paths.
+    :rtype: dict(Location: List[Location])
     """
     adjacency_list = {l: [] for l in Location.query.all()}
 
@@ -15,4 +17,33 @@ def get_graph():
             adjacency_list[loc2].append(loc1)
 
     return adjacency_list
+
+
+def are_valid_credentials(email, password):
+    """Determines if a user exists in the database.
+    :param email: The email address of the student.
+    :type email: str
+    :param password: The password of the student.
+    :type password: str
+    :return: Whether or not the user exists.
+    :rtype: bool
+    """
+    return 0 < len(Student.query.filter_as(student_email=email,
+                                           password=password).all())
+
+
+def get_student(email):
+    return Student.query.filter_as(student_email=email).first()
+
+
+def get_all_buildings():
+    return Building.query.all()
+
+
+def create_student(student_info, classes):
+    db.session.add(student_info)
+    for c in classes:
+        db.session.add(c)
+
+
 
