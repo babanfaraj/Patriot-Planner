@@ -1,11 +1,19 @@
 -- Sets up the patriotplanner tables
 
+CREATE TABLE building (
+    building_name VARCHAR(50),
+    PRIMARY KEY (building_name)
+);
+
 CREATE TABLE location (
     location_name VARCHAR(25),
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
+    building VARCHAR(50),
     is_study_location BOOLEAN NOT NULL,
     is_parking_lot BOOLEAN NOT NULL,
+    FOREIGN KEY (building)
+        REFERENCES building(building_name),
     PRIMARY KEY (location_name)
 );
 
@@ -29,26 +37,26 @@ CREATE TABLE edge (
 );
 
 CREATE TABLE restaurant (
-    location VARCHAR(25),
-    resturant_name VARCHAR(25),
-    FOREIGN KEY (location)
-        REFERENCES location(location_name),
-    PRIMARY KEY (location, resturant_name)
+    building VARCHAR(50),
+    restaurant_name VARCHAR(25),
+    FOREIGN KEY (building)
+        REFERENCES building(building_name),
+    PRIMARY KEY (building, restaurant_name)
 );
 
-CREATE TABLE schedule (
+CREATE TABLE class_time (
     student_email VARCHAR(50),
     year CHAR(4),
     semester VARCHAR(7),
     class_name VARCHAR(25),
-    location VARCHAR(25),
+    building VARCHAR(50),
     start_time TIME NOT NULL,
     end_time TIME NOT NULL,
     week_days VARCHAR(7),
     FOREIGN KEY (student_email)
         REFERENCES student(email),
-    FOREIGN KEY (location)
-        REFERENCES location(location_name),
+    FOREIGN KEY (building)
+        REFERENCES building(building_name),
     PRIMARY KEY (student_email, year, semester, class_name)
 );
 

@@ -12,12 +12,15 @@ def visualize_map():
     graph = db_conn.get_graph()
     for parent_node in graph.items():
         x1, y1 = parent_node[0].coords()
-        ax1.annotate(parent_node[0].location_name, (x1, y1))
+        label = '{} ({})'.format(parent_node[0].location_name,
+                                 parent_node[0].building)
+        ax1.annotate(label, (x1, y1))
         ax1.plot(x1, y1, 'ro')
         for child_node in parent_node[1]:
             x2, y2 = child_node.coords()
             ax1.plot(x2, y2, 'ro')
-            ax1.annotate(child_node.location_name, (x2, y2))
+            label = '{} ({})'.format(child_node.location_name, child_node.building)
+            ax1.annotate(label, (x2, y2))
             e = Edge.query.filter_by(location1=parent_node[0].location_name,
                                      location2=child_node.location_name).all()
             if len(e) == 0:
