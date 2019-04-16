@@ -34,13 +34,16 @@
 # PyCharm
 .idea/
 
+# Project Specific (AWS)
+*.pem
+*.txt
+db_login.txt
+MyEC2KeyPair.pem
+
 # Project Specific (C++)
 bin/
 CMakeFiles/
 Makefile
 CMakeCache.txt
 cmake_install.cmake
-
-# Project Specific (AWS)
-*.pem
 
