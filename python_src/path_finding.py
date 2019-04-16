@@ -11,15 +11,7 @@ def get_best_path(graph,edgeCosts,start,end):
     :return:
     '''
 
-def calculate_cost(graph):
-    '''
-    :param graph: A set of adjacent list
-    :return: A list that contains costs for each possible edge
-    '''
-
 if __name__=='__main__':
     graph2 = get_graph()
 
-    edgeCosts = calculate_cost(graph2)
-
-    print("Hello")
+    print(graph2)
