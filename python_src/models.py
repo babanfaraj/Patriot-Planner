@@ -6,6 +6,13 @@ from python_src import db
 class Building(db.Model):
     __tablename__ = 'building'
     building_name = db.Column(db.String(50), primary_key=True)
+    is_study_location = db.Column(db.Boolean, nullable=False)
+
+    def entrances(self):
+        return Location.query.filter_as(building=self.building_name).all()
+
+    def restaurants(self):
+        return Restaurant.query.filter_as(building=self.building_name).all()
 
     def __repr__(self):
         return 'Building({})'.format(self.building_name)
@@ -17,7 +24,6 @@ class Location(db.Model):
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
     building = db.Column(db.String(50), primary_key=True)
-    is_study_location = db.Column(db.Boolean, nullable=False)
     is_parking_lot = db.Column(db.Boolean, nullable=False)
 
     def coords(self):
@@ -48,10 +54,9 @@ class Location(db.Model):
 
     def __repr__(self):
         rep = ('Location(location_name={}, latitude={}, longitude={}, '
-               + 'building = {}, is_study_location={}, is_parking_lot={})')
+               + 'building = {}, is_parking_lot={})')
         return rep.format(self.location_name, self.latitude, self.longitude,
-                          self.building, self.is_study_location,
-                          self.is_parking_lot)
+                          self.building, self.is_parking_lot)
 
 
 class Student(db.Model):
@@ -60,6 +65,21 @@ class Student(db.Model):
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(25), nullable=False)
+
+    def all_classes(self):
+        """Returns all the classes associated with a student
+        :rtype: List[ClassTime]
+        """
+        return ClassTime.query.filter_as(email=self.email).all()
+
+    def add_class(self, class_name, year, semester, location, start_time, end_time,
+                  week_days):
+        db.session.add(
+            ClassTime(student_email=self.email, class_name=class_name,
+                      year=year, semester=semester, location=location,
+                      start_time=start_time, end_time=end_time,
+                      week_days=week_days))
+        db.session.commit()
 
     def __repr__(self):
         # Don't print the user's password when __repr__ is called

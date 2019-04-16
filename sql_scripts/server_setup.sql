@@ -2,6 +2,7 @@
 
 CREATE TABLE building (
     building_name VARCHAR(50),
+    is_study_location BOOLEAN NOT NULL,
     PRIMARY KEY (building_name)
 );
 
@@ -10,7 +11,6 @@ CREATE TABLE location (
     latitude FLOAT NOT NULL,
     longitude FLOAT NOT NULL,
     building VARCHAR(50),
-    is_study_location BOOLEAN NOT NULL,
     is_parking_lot BOOLEAN NOT NULL,
     FOREIGN KEY (building)
         REFERENCES building(building_name),
