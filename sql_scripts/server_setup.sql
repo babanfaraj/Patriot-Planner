@@ -70,5 +70,3 @@ CREATE TABLE study_time (
     PRIMARY KEY (student_email)
 );
 
-INSERT INTO student VALUES ('cguerra5@masonlive.gmu.edu', 'Carlos', 'Guerra', 'password');
-
