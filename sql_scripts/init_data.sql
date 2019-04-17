@@ -11,7 +11,7 @@ INSERT INTO building VALUES ('Tidewater', FALSE);
 INSERT INTO building VALUES ('Enterprise Hall', TRUE);
 INSERT INTO building VALUES ('Research Hall', TRUE);
 INSERT INTO building VALUES ('Nguyen Engineering Building', TRUE);
-INSERT INTO building VALUES ('Music/Theater', TRUE);
+INSERT INTO building VALUES ('Music/Theater Building', TRUE);
 INSERT INTO building VALUES ('College Hall', TRUE);
 
 -- Inserts all the locations (nodes) in the graph that represents the locations
@@ -177,8 +177,8 @@ INSERT INTO edge VALUES ('RH3', 'Rd54', TRUE);
 INSERT INTO edge VALUES ('Rd54', 'Rd41', TRUE);
 
 -- Music and Theater Outline
-INSERT INTO location VALUES ('MT1', 38.829063, -77.307811, 'Music/Theater', FALSE);
-INSERT INTO location VALUES ('MT2', 38.829530, -77.308258, 'Music/Theater', FALSE);
+INSERT INTO location VALUES ('MT1', 38.829063, -77.307811, 'Music/Theater Building', FALSE);
+INSERT INTO location VALUES ('MT2', 38.829530, -77.308258, 'Music/Theater Building', FALSE);
 INSERT INTO location VALUES ('CH1', 38.829043, -77.307856, 'College Hall', FALSE);
 INSERT INTO edge VALUES ('JC9', 'MT1', TRUE);
 INSERT INTO edge VALUES ('MT1', 'CH1', TRUE);
@@ -240,4 +240,16 @@ INSERT INTO restaurant VALUES ('Johnson Center', 'Chipotle');
 -- VALUES format:
 -- (email, first_name, last_name, password)
 INSERT INTO student VALUES ('cguerra5@masonlive.gmu.edu', 'Carlos', 'Guerra', 'password');
+
+-- Inserts student class times into the class_time table
+-- VALUES format:
+-- (student_email, year, semester, class_name, building, start_time, end_time, week_days)
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'CS321', 'Planetary Hall', '12:00:00', '13:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'STAT350', 'Enterprise Hall', '15:00:00', '16:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'OR442', 'Music/Theater Building', '13:30:00', '16:10:00', 'MW');
+
+-- Inserts student study preferences into the study_time table
+-- VALUES format:
+-- (student_email, weekly_hours, min_cont_hours, max_cont_hours)
+INSERT INTO study_time VALUES ('cguerra5@masonlive.gmu.edu', 8.0, 0.5, 1.0, 0.16666667);
 
