@@ -80,7 +80,7 @@ class Student(db.Model):
         """Returns all the classes associated with a student
         :rtype: List[ClassTime]
         """
-        return ClassTime.query.filter_by(email=self.email).all()
+        return ClassTime.query.filter_by(student_email=self.email).all()
 
     def add_class(self, class_name, year, semester, location, start_time, end_time,
                   week_days):
@@ -196,6 +196,7 @@ class StudyTime(db.Model):
     weekly_hours = db.Column(db.Float, nullable=False)
     min_cont_hours = db.Column(db.Float, nullable=False)
     max_cont_hours = db.Column(db.Float, nullable=False)
+    break_time_hours = db.Column(db.Float, nullable=False)
 
     @staticmethod
     def get(student_email):
@@ -204,7 +205,8 @@ class StudyTime(db.Model):
 
     def __repr__(self):
         rep = ('StudyTime(student_email={}, weekly_hours={}, min_cont_hours={},'
-               + ' max_cont_hours={})')
+               + ' max_cont_hours={}, break_time_hours={})')
         return rep.format(self.student_email, self.weekly_hours,
-                          self.min_cont_hours, self.max_cont_hours)
+                          self.min_cont_hours, self.max_cont_hours,
+                          self.break_time_hours)
 
