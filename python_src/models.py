@@ -9,10 +9,15 @@ class Building(db.Model):
     is_study_location = db.Column(db.Boolean, nullable=False)
 
     def entrances(self):
-        return Location.query.filter_as(building=self.building_name).all()
+        return Location.query.filter_by(building=self.building_name).all()
 
     def restaurants(self):
-        return Restaurant.query.filter_as(building=self.building_name).all()
+        return Restaurant.query.filter_by(building=self.building_name).all()
+
+    @staticmethod
+    def get(building_name):
+        """Gets the building table entry associated with a building name"""
+        return Building.query.filter_by(building_name=building_name).first()
 
     def __repr__(self):
         return 'Building({})'.format(self.building_name)
@@ -52,6 +57,11 @@ class Location(db.Model):
         else:
             raise ValueError('The unit must be either \'m\' or \'ft\'')
 
+    @staticmethod
+    def get(location_name):
+        """Gets the location table entry associated with a location name"""
+        return Location.query.filter_by(location_name=location_name).first()
+
     def __repr__(self):
         rep = ('Location(location_name={}, latitude={}, longitude={}, '
                + 'building = {}, is_parking_lot={})')
@@ -70,7 +80,7 @@ class Student(db.Model):
         """Returns all the classes associated with a student
         :rtype: List[ClassTime]
         """
-        return ClassTime.query.filter_as(email=self.email).all()
+        return ClassTime.query.filter_by(student_email=self.email).all()
 
     def add_class(self, class_name, year, semester, location, start_time, end_time,
                   week_days):
@@ -80,6 +90,14 @@ class Student(db.Model):
                       start_time=start_time, end_time=end_time,
                       week_days=week_days))
         db.session.commit()
+
+    def study_preference(self):
+        return StudyTime.get(self.email)
+
+    @staticmethod
+    def get(student_email):
+        """Gets the student table entry associated with an email"""
+        return Student.query.filter_by(email=student_email).first()
 
     def __repr__(self):
         # Don't print the user's password when __repr__ is called
@@ -99,6 +117,16 @@ class Edge(db.Model):
                           primary_key=True)
     is_active = db.Column(db.Boolean, nullable=False)
 
+    def dist(self):
+        """Gets the distance of the edge"""
+        return Location.dist(self.location1, self.location2)
+
+    @staticmethod
+    def get(location1, location2):
+        """Gets the edge associated with two locations"""
+        return Edge.query.filter_by(location1=location1,
+                                    location2=location2).first()
+
     def __repr__(self):
         rep = 'Edge(location1={}, location2={}, is_active={})'
         return rep.format(self.location1, self.location2, self.is_active)
@@ -109,6 +137,12 @@ class Restaurant(db.Model):
     building = db.Column(db.String(25), db.ForeignKey('building.building_name'),
                          primary_key=True)
     restaurant_name = db.Column(db.String(25), primary_key=True)
+
+    @staticmethod
+    def get(building, restaurant_name):
+        """Gets the edge associated with two locations"""
+        return Restaurant.query.filter_by(building=building,
+                                          restaurant_name=restaurant_name).first()
 
     def __repr__(self):
         rep = 'Restaurant(building={}, restaurant_name={})'
@@ -127,6 +161,25 @@ class ClassTime(db.Model):
     end_time = db.Column(db.Time, nullable=False)
     week_days = db.Column(db.String(7))
 
+    @staticmethod
+    def get(student_email, year, semester, class_name):
+        """Gets the class_time table entry associated with an email and class
+        information"""
+        return ClassTime.query.filter_by(student_email=student_email,
+                                         year=year,
+                                         semester=semester,
+                                         class_name=class_name).first()
+
+    @staticmethod
+    def add(student_email, year, semester, class_name, building, start_time,
+            end_time, week_days):
+        """Adds an entry to the ClassTime table"""
+        db.session.add(
+            ClassTime(student_email=student_email, year=year, semester=semester,
+                      class_name=class_name, building=building,
+                      start_time=start_time, end_time=end_time, week_days=week_days))
+        db.session.commit()
+
     def __repr__(self):
         rep = ('Schedule(student_email={}, year={}, semester={}, '
                + 'class_name={}, building={}, start_time={}, '
@@ -143,10 +196,17 @@ class StudyTime(db.Model):
     weekly_hours = db.Column(db.Float, nullable=False)
     min_cont_hours = db.Column(db.Float, nullable=False)
     max_cont_hours = db.Column(db.Float, nullable=False)
+    break_time_hours = db.Column(db.Float, nullable=False)
+
+    @staticmethod
+    def get(student_email):
+        """Gets the study_time table entry associated with an email"""
+        return StudyTime.query.filter_by(student_email=student_email).first()
 
     def __repr__(self):
         rep = ('StudyTime(student_email={}, weekly_hours={}, min_cont_hours={},'
-               + ' max_cont_hours={})')
+               + ' max_cont_hours={}, break_time_hours={})')
         return rep.format(self.student_email, self.weekly_hours,
-                          self.min_cont_hours, self.max_cont_hours)
+                          self.min_cont_hours, self.max_cont_hours,
+                          self.break_time_hours)
 
