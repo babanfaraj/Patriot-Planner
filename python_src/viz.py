@@ -1,4 +1,4 @@
-import matplotlib.pylab as plt
+import matplotlib.pyplot as plt
 
 from python_src import db_connection as db_conn
 from python_src.models import Edge
