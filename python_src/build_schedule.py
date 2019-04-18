@@ -1,5 +1,6 @@
 from python_src.models import *
 from python_src.db_connection import *
+import datetime
 
 
 def build_schedule(email, semester, year):
@@ -50,7 +51,22 @@ def build_schedule(email, semester, year):
     if no_availabity_days == 5:
       max_cont_hours -= 5.0/60.0
 
-  return study_times
+  print(study_times)
+  study_times_datetime = [[], [], [], [], []]
+  day_num = 0
+  for day in study_times:
+    for session in day:
+      start_hour = int(session[0])
+      start_minute = round((session[0] - start_hour) * 60.0)
+      end_hour = int(session[1])
+      end_minute = round((session[1] - end_hour) * 60.0)
+      start_time = datetime.time(start_hour, start_minute)
+      end_time = datetime.time(end_hour, end_minute)
+      study_times_datetime[day_num].append((start_time, end_time))
+    day_num+=1
+
+  print(study_times_datetime)
+  return study_times_datetime
 
 def find_study_time(daily_available, study_length):
   possible_time = []
@@ -58,7 +74,7 @@ def find_study_time(daily_available, study_length):
     possible_time.append((available_time[0], available_time[0] + study_length))
     possible_time.append((available_time[1] - study_length, available_time[1]))
  # print(possible_time)
-  best_study_time = possible_time[round(len(possible_time)/2)]
+  best_study_time = possible_time[round((len(possible_time)-1)/2)]
   return best_study_time
 
 
