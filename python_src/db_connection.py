@@ -1,4 +1,4 @@
-from python_src.models import Location, Student, Edge, Building
+from python_src.models import Location, Student, Edge
 from python_src import db
 
 
