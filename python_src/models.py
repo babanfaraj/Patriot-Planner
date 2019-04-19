@@ -76,6 +76,45 @@ class Student(db.Model):
     last_name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(25), nullable=False)
 
+    def get_weekly_schedule(self, year, semester):
+        """Gets the weekly
+        :param year: The year of the class as a string.
+        :type year: str
+        :param semester: The semester of the class, either 'fall', 'spring', or
+                         'summer'
+        :type semester: str
+        :return: A five element list where index 0 contains a list of classes
+                 that occur on Monday, 1 a list of classes that occur on
+                 Tuesday etc. Each list is sorted by start time.
+        :rtype: List[List[ClassTime]]
+        """
+        classes = ClassTime.query.filter_by(student_email=self.email,
+                                            semester=semester.lower(),
+                                            year=year).all()
+
+        # Initialize the list of classes for each weekday
+        classes_by_day = [[] for _ in range(5)]
+        if len(classes) == 0:
+            return classes_by_day
+
+        # Append each class to its corresponding weekday(s)
+        days = {d: i for i, d in enumerate('MTWRF')}
+        for c in classes:
+            # Get the indices of the days a class occurs on
+            class_days = []
+            for week_day in c.week_days:
+                class_days.append(days[week_day])
+
+            # Add the class to each day it occurs on
+            for day_idx in class_days:
+                classes_by_day[day_idx].append(c)
+
+        # Sort each list by start time
+        for c in classes_by_day:
+            c.sort(key=lambda _: _.start_time)
+
+        return classes_by_day
+
     def all_classes(self):
         """Returns all the classes associated with a student
         :rtype: List[ClassTime]
@@ -120,6 +159,10 @@ class Edge(db.Model):
     def dist(self):
         """Gets the distance of the edge"""
         return Location.dist(self.location1, self.location2)
+
+    def locations(self):
+        """Gets the distance of the edge"""
+        return self.location1, self.location2
 
     @staticmethod
     def get(location1, location2):
@@ -181,7 +224,7 @@ class ClassTime(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        rep = ('Schedule(student_email={}, year={}, semester={}, '
+        rep = ('ClassTime(student_email={}, year={}, semester={}, '
                + 'class_name={}, building={}, start_time={}, '
                + 'end_time={}, week_days={})')
         return rep.format(self.student_email, self.year, self.semester,
@@ -197,6 +240,8 @@ class StudyTime(db.Model):
     min_cont_hours = db.Column(db.Float, nullable=False)
     max_cont_hours = db.Column(db.Float, nullable=False)
     break_time_hours = db.Column(db.Float, nullable=False)
+    earliest_time = db.Column(db.Time, nullable=False)
+    latest_time = db.Column(db.Time, nullable=False)
 
     @staticmethod
     def get(student_email):
@@ -209,4 +254,10 @@ class StudyTime(db.Model):
         return rep.format(self.student_email, self.weekly_hours,
                           self.min_cont_hours, self.max_cont_hours,
                           self.break_time_hours)
+
+
+if __name__ == '__main__':
+    carlos = Student.get('cguerra5@masonlive.gmu.edu')
+    for d in carlos.get_weekly_schedule(year='2018', semester='spring'):
+        print(d)
 

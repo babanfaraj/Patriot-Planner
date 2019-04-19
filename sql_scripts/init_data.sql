@@ -297,18 +297,18 @@ INSERT INTO student VALUES ('cguerra5@masonlive.gmu.edu', 'Carlos', 'Guerra', 'p
 -- Inserts student class times into the class_time table
 -- VALUES format:
 -- (student_email, year, semester, class_name, building, start_time, end_time, week_days)
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'CS321', 'Planetary Hall', '12:00:00', '13:15:00', 'MW');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'STAT350', 'Enterprise Hall', '15:00:00', '16:15:00', 'MW');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'OR442', 'Music/Theater Building', '13:30:00', '16:10:00', 'MW');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'Spring', 'PHYS260-001', 'Nguyen Engineering Building', '08:30:00', '09:20:00', 'MWF');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'Spring', 'PHYS260-302', 'Planetary Hall', '11:30:00', '12:20:00', 'F');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'Spring', 'PHYS261', 'Planetary Hall', '16:30:00', '19:10:00', 'W');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'Spring', 'CS367', 'Art Building', '12:00:00', '13:15:00', 'MW');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'Spring', 'MATH203', 'Innovation Hall', '10:30:00', '11:45:00', 'MW');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'Spring', 'CS330', 'Merten Hall', '15:00:00', '16:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'CS321', 'Planetary Hall', '12:00:00', '13:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'STAT350', 'Enterprise Hall', '15:00:00', '16:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'OR442', 'Music/Theater Building', '13:30:00', '16:10:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'PHYS260-001', 'Nguyen Engineering Building', '08:30:00', '09:20:00', 'MWF');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'PHYS260-302', 'Planetary Hall', '11:30:00', '12:20:00', 'F');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'PHYS261', 'Planetary Hall', '16:30:00', '19:10:00', 'W');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'CS367', 'Art Building', '12:00:00', '13:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'MATH203', 'Innovation Hall', '10:30:00', '11:45:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'CS330', 'Merten Hall', '15:00:00', '16:15:00', 'MW');
 
 -- Inserts student study preferences into the study_time table
 -- VALUES format:
 -- (student_email, weekly_hours, min_cont_hours, max_cont_hours)
-INSERT INTO study_time VALUES ('cguerra5@masonlive.gmu.edu', 8.0, 0.5, 1.0, 0.16666667);
+INSERT INTO study_time VALUES ('cguerra5@masonlive.gmu.edu', 8.0, 0.5, 1.0, 0.16666667, '09:00:00', '21:00:00');
 

@@ -66,6 +66,9 @@ CREATE TABLE study_time (
     min_cont_hours FLOAT NOT NULL,
     max_cont_hours FLOAT NOT NULL,
     break_time_hours FLOAT NOT NULL,
+    earliest_time TIME NOT NULL,
+    latest_time TIME NOT NULL,
+
     FOREIGN KEY (student_email)
         REFERENCES student(email),
     PRIMARY KEY (student_email)
