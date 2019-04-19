@@ -57,6 +57,7 @@ def visualize_map(path=None, label_nodes=True):
 
 
 def plot_location(ax, loc, path_locs=None, path=None, label_nodes=True):
+    """Plots a location on a graph."""
     x, y = loc.coords()
     # Color road nodes as black and path as blue
     if path is not None and loc.location_name in path_locs:

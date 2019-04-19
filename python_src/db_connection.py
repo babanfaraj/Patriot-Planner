@@ -28,14 +28,35 @@ def are_valid_credentials(email, password):
     :return: Whether or not the user exists.
     :rtype: bool
     """
-    return 0 < len(Student.query.filter_as(email=email,
+    return 0 < len(Student.query.filter_by(email=email,
                                            password=password).all())
 
 
 def create_student(student_info, classes, study_preference):
+    """Adds a student to the database with their classes and study preferences.
+    :param student_info: The student's login information.
+    :type student_info: Student
+    :param classes: The list of classes a student has.
+    :type classes: List[ClassTime]
+    :param study_preference: The student's study preferences.
+    :type study_preference: StudyTime
+    :return:
+    """
     db.session.add(student_info)
     for c in classes:
         db.session.add(c)
     db.session.add(study_preference)
     db.session.commit()
+
+def path_to_gmaps_link(path):
+    link = 'https://www.google.com/maps/dir'
+    for loc in path:
+        long, lat = loc.coords()
+        link += '/' + str(lat) + ',+' + str(long)
+    return link
+
+
+
+if __name__ == '__main__':
+    print(are_valid_credentials('cguerra5@masonlive.gmu.edu', 'password'))
 

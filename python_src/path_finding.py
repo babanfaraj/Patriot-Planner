@@ -3,6 +3,7 @@ from python_src.db_connection import get_graph
 from python_src.db_connection import *
 from python_src.viz import visualize_map
 
+
 def find_optimal_class_path(start_loc, classes):
     """
     :param start_loc: A starting location.
@@ -92,6 +93,14 @@ def get_best_path(graph, start, end):
     return shortest_path, distance_dic[end]
 
 
+def path_to_gmaps_link(path):
+    link = 'https://www.google.com/maps/dir'
+    for loc in path:
+        long, lat = loc.coords()
+        link += '/' + str(lat) + ',+' + str(long)
+    return link
+
+
 if __name__ == '__main__':
     graph = get_graph()
     start = None
@@ -115,4 +124,6 @@ if __name__ == '__main__':
     #    print(loc.location_name)
     #visualize_map(path=optimal_class_path[0])
     for path in optimal_class_path:
-      visualize_map(path=path)
+        visualize_map(path=path)
+        print(path_to_gmaps_link(path))
+
