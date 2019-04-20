@@ -1,4 +1,4 @@
-from python_src.models import Location, Student, Edge
+from python_src.models import Location, Student, Edge, ClassTime, StudyTime
 from python_src import db
 
 
@@ -28,35 +28,56 @@ def are_valid_credentials(email, password):
     :return: Whether or not the user exists.
     :rtype: bool
     """
-    return 0 < len(Student.query.filter_by(email=email,
+    return 0 < len(Student.query.filter_as(email=email,
                                            password=password).all())
 
 
 def create_student(student_info, classes, study_preference):
-    """Adds a student to the database with their classes and study preferences.
-    :param student_info: The student's login information.
-    :type student_info: Student
-    :param classes: The list of classes a student has.
-    :type classes: List[ClassTime]
-    :param study_preference: The student's study preferences.
-    :type study_preference: StudyTime
-    :return:
-    """
     db.session.add(student_info)
+    db.session.commit()
     for c in classes:
         db.session.add(c)
     db.session.add(study_preference)
     db.session.commit()
 
-def path_to_gmaps_link(path):
-    link = 'https://www.google.com/maps/dir'
-    for loc in path:
-        long, lat = loc.coords()
-        link += '/' + str(lat) + ',+' + str(long)
-    return link
-
-
 
 if __name__ == '__main__':
-    print(are_valid_credentials('cguerra5@masonlive.gmu.edu', 'password'))
+    StudyTime.print_all()
+    Student.print_all()
+    stud = None
+    if Student.get('alam12@masonlive.gmu.edu') is None:
+        stud = Student(email='alam12@masonlive.gmu.edu', password='password',
+                       first_name='Albert', last_name='Lam')
+    classes = [
+        ClassTime(student_email='alam12@masonlive.gmu.edu', year='2018',
+                  semester='spring', class_name='CS110',
+                  building='Art Building', start_time='09:00:00',
+                  end_time='10:15:00', week_days='MWF'),
+        ClassTime(student_email='alam12@masonlive.gmu.edu', year='2018',
+                  semester='spring', class_name='ECE301',
+                  building='Merten Hall', start_time='12:00:00',
+                  end_time='13:15:00', week_days='MW'),
+        ClassTime(student_email='alam12@masonlive.gmu.edu', year='2018',
+                  semester='spring', class_name='ECE301-001',
+                  building='College Hall', start_time='03:00:00',
+                  end_time='05:45:00', week_days='MW'),
+        ClassTime(student_email='alam12@masonlive.gmu.edu', year='2018',
+                  semester='spring', class_name='ECE301-202',
+                  building='College Hall', start_time='03:00:00',
+                  end_time='05:45:00', week_days='F'),
+        ClassTime(student_email='alam12@masonlive.gmu.edu', year='2018',
+                  semester='spring', class_name='CS112',
+                  building='Art Building', start_time='09:00:00',
+                  end_time='10:15:00', week_days='TR'),
+        ClassTime(student_email='alam12@masonlive.gmu.edu', year='2018',
+                  semester='spring', class_name='MATH201',
+                  building='Art Building', start_time='2:00:00',
+                  end_time='3:15:00', week_days='TR')]
+
+    pref = StudyTime(student_email='alam12@masonlive.gmu.edu',
+                     weekly_hours=5, min_cont_hours=0.75, max_cont_hours=2,
+                     break_time_hours=0.5, earliest_time='10:00:00',
+                     latest_time='23:59:00')
+
+    create_student(stud, classes, pref)
 
