@@ -19,6 +19,17 @@ class Building(db.Model):
         """Gets the building table entry associated with a building name"""
         return Building.query.filter_by(building_name=building_name).first()
 
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:20} | '
+        print(header.format('building_name', 'is_study_location'))
+        [print(_) for _ in Building.query.all()]
+
+    def __str__(self):
+        rep = '{:50} | {:20} | '
+        return rep.format(self.building_name, self.is_study_location)
+
     def __repr__(self):
         return 'Building({})'.format(self.building_name)
 
@@ -123,6 +134,7 @@ class Student(db.Model):
 
     def add_class(self, class_name, year, semester, location, start_time, end_time,
                   week_days):
+        """Adds a class to a users account."""
         db.session.add(
             ClassTime(student_email=self.email, class_name=class_name,
                       year=year, semester=semester, location=location,
@@ -131,12 +143,28 @@ class Student(db.Model):
         db.session.commit()
 
     def study_preference(self):
+        """Returns a students study preference as a StudyTime object"""
         return StudyTime.get(self.email)
 
     @staticmethod
     def get(student_email):
         """Gets the student table entry associated with an email"""
         return Student.query.filter_by(email=student_email).first()
+
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:25} | {:25} | {:25} |'
+        print(header.format('email', 'first_name', 'last_name', 'password'))
+        [print(_) for _ in Student.query.all()]
+
+    def __str__(self):
+        # Don't print the user's password when __repr__ is called
+        p = ''
+        for _ in range(len(self.password)):
+            p += '*'
+        rep = '{:50} | {:25} | {:25} | {:25} |'
+        return rep.format(self.email, self.first_name, self.last_name, p)
 
     def __repr__(self):
         # Don't print the user's password when __repr__ is called
@@ -247,6 +275,22 @@ class StudyTime(db.Model):
     def get(student_email):
         """Gets the study_time table entry associated with an email"""
         return StudyTime.query.filter_by(student_email=student_email).first()
+
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:15} | {:15} | {:15} | {:15} | {:15} | {:15} |'
+        print(header.format('student_email', 'weekly_hours', 'min_cont_hours',
+                            'max_cont_hours', 'break_time_hours',
+                            'earliest_time', 'latest_time'))
+        [print(_) for _ in StudyTime.query.all()]
+
+    def __str__(self):
+        rep = '{:50} | {:15} | {:15} | {:15} | {:16} |     {}    |     {}    |'
+        return rep.format(self.student_email, self.weekly_hours,
+                          self.min_cont_hours, self.max_cont_hours,
+                          self.break_time_hours, self.earliest_time,
+                          self.latest_time)
 
     def __repr__(self):
         rep = ('StudyTime(student_email={}, weekly_hours={}, min_cont_hours={},'
