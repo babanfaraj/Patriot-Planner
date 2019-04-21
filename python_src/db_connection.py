@@ -28,7 +28,7 @@ def are_valid_credentials(email, password):
     :return: Whether or not the user exists.
     :rtype: bool
     """
-    return Student.query.filter_as(email=email,
+    return Student.query.filter_by(email=email,
                                    password=password).first() is not None
 
 
