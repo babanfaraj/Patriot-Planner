@@ -14,7 +14,7 @@ app.config['SECRET_KEY'] = 'asdf'
 Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'index'
+login_manager.login_view = 'login'
 
 
 @login_manager.user_loader
@@ -25,22 +25,23 @@ def load_user(user_email):
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Length(max=50)])
     password = StringField('password', validators=[InputRequired(), Length(max=25)])
+    remember = BooleanField('remember me')
 
 
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
 @app.route('/login', methods=['GET', 'POST'])
-def index():
+@app.route('/index', methods=['GET', 'POST'])
+def login():
     form = LoginForm()
     if form.validate_on_submit():
         if db_conn.are_valid_credentials(form.email.data, form.password.data):
-            login_user(Student.get(form.email.data), remember=True)
+            login_user(Student.get(form.email.data), remember=form.remember.data)
             return redirect(url_for('home'))
         else:
             return '<h1> Invalid credentials </h1>'
     return render_template("index.html", form=form)
 
 
+@app.route('/')
 @app.route('/home')
 @login_required
 def home():
@@ -69,5 +70,5 @@ def settings():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 
