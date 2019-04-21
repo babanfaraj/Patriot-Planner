@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 
 from python_src import db_connection as db_conn
 from python_src.models import Edge
@@ -8,6 +9,7 @@ def visualize_map(path=None, label_nodes=True):
     """Displays a connected graph of the map"""
     edges = None
     path_locs = None
+
     if path is not None:
         path_locs = [_.location_name for _ in path]
         if len(path) > 1:
@@ -58,7 +60,6 @@ def visualize_map(path=None, label_nodes=True):
 
 
 def plot_location(ax, loc, path_locs=None, path=None, label_nodes=True):
-    """Plots a location on a graph."""
     x, y = loc.coords()
     # Color road nodes as black and path as blue
     if path is not None and loc.location_name in path_locs:
