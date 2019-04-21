@@ -52,4 +52,5 @@ __pycache__/
 venv/
 venv/*
 maps_api.txt
+*.pyc
 
