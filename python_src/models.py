@@ -1,90 +1,10 @@
 import geopy.distance
 
 from python_src import db
+from flask_login import UserMixin
 
 
-class Building(db.Model):
-    __tablename__ = 'building'
-    building_name = db.Column(db.String(50), primary_key=True)
-    is_study_location = db.Column(db.Boolean, nullable=False)
-
-    def entrances(self):
-        return Location.query.filter_by(building=self.building_name).all()
-
-    def restaurants(self):
-        return Restaurant.query.filter_by(building=self.building_name).all()
-
-    @staticmethod
-    def get(building_name):
-        """Gets the building table entry associated with a building name"""
-        return Building.query.filter_by(building_name=building_name).first()
-
-    @staticmethod
-    def print_all():
-        """Prints every entry in the table"""
-        header = '{:50} | {:20} | '
-        print(header.format('building_name', 'is_study_location'))
-        [print(_) for _ in Building.query.all()]
-
-    @staticmethod
-    def all_names():
-        return [_.building_name for _ in Building.query.all()]
-
-    def __str__(self):
-        rep = '{:50} | {:20} | '
-        return rep.format(self.building_name, self.is_study_location)
-
-    def __repr__(self):
-        return 'Building({})'.format(self.building_name)
-
-
-class Location(db.Model):
-    __tablename__ = 'location'
-    location_name = db.Column(db.String(25), primary_key=True)
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    building = db.Column(db.String(50), primary_key=True)
-    is_parking_lot = db.Column(db.Boolean, nullable=False)
-
-    def coords(self):
-        """Gets the coordinates of a location
-        :return: A two tuple (longitude, latitude)
-        """
-        return self.longitude, self.latitude
-
-    @staticmethod
-    def dist(loc1, loc2, unit='ft'):
-        """Gets the distance between two locations in some unit.
-        :param loc1: The initial location.
-        :type loc1: Location
-        :param loc2: The destination location.
-        :type loc2: Location
-        :param unit: The unit of measure either feet ('ft') or meters ('m'),
-                     defaults to feet.
-        :type unit: str
-        :return: The distance from loc1 to loc2 in the unit.
-        :raises: ValueError when an invalid unit is input
-        """
-        if unit == 'ft' or unit == 'feet':
-            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).ft
-        if unit == 'm' or unit == 'meter':
-            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).m
-        else:
-            raise ValueError('The unit must be either \'m\' or \'ft\'')
-
-    @staticmethod
-    def get(location_name):
-        """Gets the location table entry associated with a location name"""
-        return Location.query.filter_by(location_name=location_name).first()
-
-    def __repr__(self):
-        rep = ('Location(location_name={}, latitude={}, longitude={}, '
-               + 'building = {}, is_parking_lot={})')
-        return rep.format(self.location_name, self.latitude, self.longitude,
-                          self.building, self.is_parking_lot)
-
-
-class Student(db.Model):
+class Student(db.Model, UserMixin):
     __tablename__ = 'student'
     email = db.Column(db.String(50), primary_key=True)
     first_name = db.Column(db.String(25), nullable=False)
@@ -150,9 +70,14 @@ class Student(db.Model):
         StudyTime.query.filter_by(student_email=self.email).delete()
         db.session.commit()
 
+    def delete_meal_preference(self):
+        MealTime.query.filter_by(student_email=self.email).delete()
+        db.session.commit()
+
     def reset_account(self):
         self.delete_all_classes()
         self.delete_study_preference()
+        self.delete_meal_preference()
 
     def all_classes(self):
         """Returns all the classes associated with a student
@@ -172,6 +97,10 @@ class Student(db.Model):
         """Returns a students study preference as a StudyTime object"""
         return StudyTime.get(self.email)
 
+    def meal_preference(self):
+        """Returns a students meal preference as a StudyTime object"""
+        return MealTime.get(self.email)
+
     @staticmethod
     def get(student_email):
         """Gets the student table entry associated with an email"""
@@ -183,6 +112,9 @@ class Student(db.Model):
         header = '{:50} | {:25} | {:25} | {:25} |'
         print(header.format('email', 'first_name', 'last_name', 'password'))
         [print(_) for _ in Student.query.all()]
+
+    def get_id(self):
+        return self.email
 
     def __str__(self):
         # Don't print the user's password when __repr__ is called
@@ -200,6 +132,83 @@ class Student(db.Model):
 
         rep = 'Student(email={}, first_name={}, last_name={}, password={})'
         return rep.format(self.email, self.first_name, self.last_name, p)
+
+
+class Building(db.Model):
+    __tablename__ = 'building'
+    building_name = db.Column(db.String(50), primary_key=True)
+    is_study_location = db.Column(db.Boolean, nullable=False)
+
+    def entrances(self):
+        return Location.query.filter_by(building=self.building_name).all()
+
+    def restaurants(self):
+        return Restaurant.query.filter_by(building=self.building_name).all()
+
+    @staticmethod
+    def get(building_name):
+        """Gets the building table entry associated with a building name"""
+        return Building.query.filter_by(building_name=building_name).first()
+
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:20} | '
+        print(header.format('building_name', 'is_study_location'))
+        [print(_) for _ in Building.query.all()]
+
+    def __str__(self):
+        rep = '{:50} | {:20} | '
+        return rep.format(self.building_name, self.is_study_location)
+
+    def __repr__(self):
+        return 'Building({})'.format(self.building_name)
+
+
+class Location(db.Model):
+    __tablename__ = 'location'
+    location_name = db.Column(db.String(25), primary_key=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    building = db.Column(db.String(50), primary_key=True)
+    is_parking_lot = db.Column(db.Boolean, nullable=False)
+
+    def coords(self):
+        """Gets the coordinates of a location
+        :return: A two tuple (longitude, latitude)
+        """
+        return self.longitude, self.latitude
+
+    @staticmethod
+    def dist(loc1, loc2, unit='ft'):
+        """Gets the distance between two locations in some unit.
+        :param loc1: The initial location.
+        :type loc1: Location
+        :param loc2: The destination location.
+        :type loc2: Location
+        :param unit: The unit of measure either feet ('ft') or meters ('m'),
+                     defaults to feet.
+        :type unit: str
+        :return: The distance from loc1 to loc2 in the unit.
+        :raises: ValueError when an invalid unit is input
+        """
+        if unit == 'ft' or unit == 'feet':
+            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).ft
+        if unit == 'm' or unit == 'meter':
+            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).m
+        else:
+            raise ValueError('The unit must be either \'m\' or \'ft\'')
+
+    @staticmethod
+    def get(location_name):
+        """Gets the location table entry associated with a location name"""
+        return Location.query.filter_by(location_name=location_name).first()
+
+    def __repr__(self):
+        rep = ('Location(location_name={}, latitude={}, longitude={}, '
+               + 'building = {}, is_parking_lot={})')
+        return rep.format(self.location_name, self.latitude, self.longitude,
+                          self.building, self.is_parking_lot)
 
 
 class Edge(db.Model):
@@ -320,10 +329,37 @@ class StudyTime(db.Model):
 
     def __repr__(self):
         rep = ('StudyTime(student_email={}, weekly_hours={}, min_cont_hours={},'
-               + ' max_cont_hours={}, break_time_hours={})')
+               + ' max_cont_hours={}, break_time_hours={}, earliest_time={},'
+               + ' latest_time={})')
         return rep.format(self.student_email, self.weekly_hours,
                           self.min_cont_hours, self.max_cont_hours,
-                          self.break_time_hours)
+                          self.break_time_hours, self.earliest_time,
+                          self.latest_time)
+
+
+class MealTime(db.Model):
+    __tablename__ = 'meal_time'
+    student_email = db.Column(db.String(50), db.ForeignKey('student.email'),
+                              primary_key=True)
+    daily_meal_num = db.Column(db.Integer, nullable=False)
+    min_meal_hours = db.Column(db.Float, nullable=False)
+    max_meal_hours = db.Column(db.Float, nullable=False)
+    earliest_time = db.Column(db.Time, nullable=False)
+    latest_time = db.Column(db.Time, nullable=False)
+
+    def __str__(self):
+        rep = '{:50} | {:15} | {:15} | {:15} |     {}    |     {}    |'
+        return rep.format(self.student_email, self.daily_meal_num,
+                          self.min_meal_hours, self.max_meal_hours,
+                          self.earliest_time, self.latest_time)
+
+    def __repr__(self):
+        rep = ('MealTime(student_email={}, daily_meal_num={},'
+               + ' min_meal_hours={}, max_meal_hours={}, earliest_time={},'
+               + ' latest_time={})')
+        return rep.format(self.student_email, self.daily_meal_num,
+                          self.min_meal_hours, self.max_meal_hours,
+                          self.earliest_time, self.latest_time)
 
 
 if __name__ == '__main__':

@@ -415,3 +415,8 @@ INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', '
 -- (student_email, weekly_hours, min_cont_hours, max_cont_hours)
 INSERT INTO study_time VALUES ('cguerra5@masonlive.gmu.edu', 8.0, 0.5, 1.0, 0.16666667, '09:00:00', '21:00:00');
 
+-- Inserts student study preferences into the meal_time table
+-- VALUES format:
+-- (student_email, daily_meal_num, min_meal_hours, max_meal_hours, earliest_time, latest_time)
+INSERT INTO meal_time VALUES ('cguerra5@masonlive.gmu.edu', 3, 0.25, 0.5, '08:00:00', '23:59:00');
+
