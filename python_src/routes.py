@@ -1,6 +1,7 @@
 from python_src import app
 from python_src.models import Student, Building
 from python_src import db_connection as db_conn
+from python_src.forms import PasswordChange
 from flask import render_template, redirect, url_for
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
@@ -68,11 +69,11 @@ def edit_schedule():
     print(all_building_names)
     return render_template("edit_schedule.html", all_building_names=all_building_names)
 
-
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    return render_template("settings.html")
+    form = PasswordChange()
+    return render_template("settings.html", title='Settings', form=form)
 
 
 @app.route('/logout')
