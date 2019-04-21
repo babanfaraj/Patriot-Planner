@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import numpy as np
 
 from python_src import db_connection as db_conn
 from python_src.models import Edge
