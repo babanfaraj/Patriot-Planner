@@ -22,7 +22,7 @@ def build_schedule(email, semester, year):
     #filter_by_semester(student_classes, semester, year)
     #set_classes(weekly_schedule, student_classes)
 
-    print(cur_student.study_preference())
+ #   print(cur_student.study_preference())
 
     hours_left = cur_student.study_preference().weekly_hours
     min_cont_hours = cur_student.study_preference().min_cont_hours
@@ -36,7 +36,7 @@ def build_schedule(email, semester, year):
    #git  print(weekly_schedule)
     unavailable_times = find_unavailable_times(weekly_schedule, earliest_time, latest_time)
 
-    print(unavailable_times)
+#    print(unavailable_times)
 
     day = 0
     study_times = [[], [], [], [], []]
@@ -75,7 +75,8 @@ def build_schedule(email, semester, year):
         study_times_datetime[day_num].append((start_time, end_time))
       day_num+=1
 
-    print(study_times_datetime)
+    map_building_to_study_time(weekly_schedule, study_times)
+ #   print(study_times_datetime)
     return study_times_datetime
 
 #Finds an individual study time
@@ -169,4 +170,53 @@ def set_classes(weekly_schedule, student_classes):
         weekly_schedule[4].append(_class)
 
 
+def map_building_to_study_time(weekly_schedule, study_times):
+    print(weekly_schedule)
+    print(study_times)
+    all_buildings = Building.query.all()
+    print(all_buildings[9])
+    study_locations = [[], [], [], [], []]
+    for i in range(len(study_times)):
+        for k in range(len(study_times[i])):
+            study_locations[i].append(find_classroom_before_after(weekly_schedule[i], study_times[i][k]))
+
+    print(study_locations)
+    return 0
+
+def find_classroom_before_after(daily_schedule, single_study_time):
+    all_buildings = Building.query.all()
+    """If the user has no classes, they are placed in the JC"""
+    #print(daily_schedule)
+    if len(daily_schedule) == 0:
+        return all_buildings[9], all_buildings[9]
+
+    start_time = single_study_time[0]
+    end_time = single_study_time[1]
+   # print(start_time, end_time)
+    class_start_times = []
+    class_end_times = []
+    for i in range(len(daily_schedule)):
+        class_start_times.append(daily_schedule[i].start_time.hour + daily_schedule[i].start_time.minute /60.0)
+        class_end_times.append(daily_schedule[i].end_time.hour + daily_schedule[i].end_time.minute / 60.0)
+
+    if start_time > class_end_times[len(class_end_times)-1]:
+        return Building.get(daily_schedule[len(daily_schedule)-1].building), Building.get(daily_schedule[len(daily_schedule) - 1].building)
+    if end_time < class_start_times[0]:
+        return Building.get(daily_schedule[0].building), Building.get(daily_schedule[0].building)
+
+    class_before = Building.get(daily_schedule[find_closest_value(start_time, class_end_times)].building)
+    class_after = Building.get(daily_schedule[find_closest_value(end_time, class_start_times)].building)
+    #print(class_start_times)
+    #print(class_end_times)
+    #print(class_before, class_after)
+    return class_before, class_after
+
+def find_closest_value(value, _list):
+    closest_distance = 9999
+    index = -1
+    for i in range(len(_list)):
+        if abs(value - _list[i]) < closest_distance:
+            closest_distance = abs(value - _list[i])
+            index = i
+    return index
 build_schedule("cguerra5@masonlive.gmu.edu", "spring", '2018')
