@@ -1,0 +1,17 @@
+.logo {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 10px;
+ }
+
+ .login {
+
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+ }
+
+ .btn-primary {
+    background-color: #006940 !important;
+ }
