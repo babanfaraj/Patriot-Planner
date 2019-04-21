@@ -1,5 +1,5 @@
 from python_src import app
-from flask import render_template
+from flask import render_template, flash, redirect, url_for
 from python_src.forms import PasswordChange
 
 
@@ -26,9 +26,14 @@ def blog():
 
 
 @app.route('/settings', methods=['GET', 'POST'])
-def blog_details():
+def change_password():
     form = PasswordChange()
-    return render_template("settings.html",form=form,title="password_change")
+
+    if form.validate_on_submit():
+        flash('Password Changed', 'success')
+        print(form.new_password)
+        print(form.confirm_new_password)
+    return render_template("settings.html", form=form, title="password_change")
 
 
 
