@@ -126,21 +126,43 @@ class Student(db.Model):
 
         return classes_by_day
 
+    def update_password(self, new_password):
+        self.password = new_password
+        db.session.commit()
+
+    def delete_class(self, year, semester, class_name):
+        ClassTime.query.filter_by(
+            student_email=self.email, year=year, semester=semester,
+            class_name=class_name).delete()
+        db.session.commit()
+
+    def delete_all_classes(self):
+        for c in self.all_classes():
+            self.delete_class(year=c.year, semester=c.semester,
+                              class_name=c.class_name)
+        db.session.commit()
+
+    def delete_study_preference(self):
+        StudyTime.query.filter_by(student_email=self.email).delete()
+        db.session.commit()
+
+    def reset_account(self):
+        self.delete_all_classes()
+        self.delete_study_preference()
+
     def all_classes(self):
         """Returns all the classes associated with a student
         :rtype: List[ClassTime]
         """
         return ClassTime.query.filter_by(student_email=self.email).all()
 
-    def add_class(self, class_name, year, semester, location, start_time, end_time,
+    def add_class(self, class_name, year, semester, building, start_time, end_time,
                   week_days):
         """Adds a class to a users account."""
-        db.session.add(
-            ClassTime(student_email=self.email, class_name=class_name,
-                      year=year, semester=semester, location=location,
+        ClassTime.add(student_email=self.email, class_name=class_name,
+                      year=year, semester=semester, building=building,
                       start_time=start_time, end_time=end_time,
-                      week_days=week_days))
-        db.session.commit()
+                      week_days=week_days)
 
     def study_preference(self):
         """Returns a students study preference as a StudyTime object"""
@@ -304,4 +326,16 @@ if __name__ == '__main__':
     carlos = Student.get('cguerra5@masonlive.gmu.edu')
     for d in carlos.get_weekly_schedule(year='2018', semester='spring'):
         print(d)
+    carlos.update_password('new_password')
+    if ClassTime.get(student_email=carlos.email, class_name='CS333',
+                     year='2017', semester='Spring') is None:
+        carlos.add_class(class_name='CS333', year='2017', semester='Spring',
+                         start_time='09:00:00', end_time='10:15:00',
+                         building='Merten Hall', week_days='MWF')
+    else:
+        carlos.delete_class(year='2017', semester='Spring', class_name='CS333')
+
+    carlos.delete_all_classes()
+    carlos.delete_study_preference()
+
 
