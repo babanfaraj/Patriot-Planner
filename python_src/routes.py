@@ -1,5 +1,5 @@
 from python_src import app
-from python_src.models import Student
+from python_src.models import Student, Building
 from python_src import db_connection as db_conn
 from flask import render_template, redirect, url_for
 from flask_wtf import FlaskForm
