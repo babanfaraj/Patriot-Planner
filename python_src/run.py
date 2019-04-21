@@ -1,9 +1,9 @@
 from python_src import app
-from python_src.viz import visualize_map
-from python_src import db_connection as db_conn
 
-
-visualize_map(label_nodes=True)
 if __name__ == '__main__':
-    app.run(debug=True)  #host='0.0.0.0', port=80)
+    on_ec2 = False  # True if the application is running on an EC2 instance
+    if on_ec2:
+        app.run(host='0.0.0.0', port=80)  # Note: must run as admin
+    else:
+        app.run(debug=True)
 

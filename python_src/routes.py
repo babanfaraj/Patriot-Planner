@@ -3,47 +3,30 @@ from flask import render_template
 
 
 @app.route('/')
-@app.route('/index.html')
+@app.route('/index')
+@app.route('/login')
 def index():
     return render_template("index.html")
 
 
-@app.route('/about.html')
+@app.route('/home')
 def about():
-    return render_template("about.html")
+    return render_template("home.html")
 
 
-@app.route('/blog.html')
+@app.route('/new_route')
+def new_route():
+    return render_template("new_route.html")
+
+
+@app.route('/edit_schedule')
 def blog():
-    return render_template("blog.html")
+    return render_template("edit_schedule.html")
 
 
-@app.route('/blog-details.html')
+@app.route('/settings')
 def blog_details():
-    return render_template("blog-details.html")
+    return render_template("settings.html")
 
 
-@app.route('/contact.html')
-def contact():
-    return render_template("contact.html")
-
-
-@app.route('/event-gallery.html')
-def event_gallery():
-    return render_template("event-gallery.html")
-
-
-@app.route('/event-schedule.html')
-def event_schedule():
-    return render_template("event-schedule.html")
-
-
-@app.route('/price.html')
-def price():
-    return render_template("price.html")
-
-
-@app.route('/speaker.html')
-def speaker():
-    return render_template("speaker.html")
 

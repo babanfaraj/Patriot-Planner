@@ -19,6 +19,21 @@ class Building(db.Model):
         """Gets the building table entry associated with a building name"""
         return Building.query.filter_by(building_name=building_name).first()
 
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:20} | '
+        print(header.format('building_name', 'is_study_location'))
+        [print(_) for _ in Building.query.all()]
+
+    @staticmethod
+    def all_names():
+        return [_.building_name for _ in Building.query.all()]
+
+    def __str__(self):
+        rep = '{:50} | {:20} | '
+        return rep.format(self.building_name, self.is_study_location)
+
     def __repr__(self):
         return 'Building({})'.format(self.building_name)
 
@@ -76,28 +91,106 @@ class Student(db.Model):
     last_name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(25), nullable=False)
 
+    def get_weekly_schedule(self, year, semester):
+        """Gets the weekly
+        :param year: The year of the class as a string.
+        :type year: str
+        :param semester: The semester of the class, either 'fall', 'spring', or
+                         'summer'
+        :type semester: str
+        :return: A five element list where index 0 contains a list of classes
+                 that occur on Monday, 1 a list of classes that occur on
+                 Tuesday etc. Each list is sorted by start time.
+        :rtype: List[List[ClassTime]]
+        """
+        classes = ClassTime.query.filter_by(student_email=self.email,
+                                            semester=semester.lower(),
+                                            year=year).all()
+
+        # Initialize the list of classes for each weekday
+        classes_by_day = [[] for _ in range(5)]
+        if len(classes) == 0:
+            return classes_by_day
+
+        # Append each class to its corresponding weekday(s)
+        days = {d: i for i, d in enumerate('MTWRF')}
+        for c in classes:
+            # Get the indices of the days a class occurs on
+            class_days = []
+            for week_day in c.week_days:
+                class_days.append(days[week_day])
+
+            # Add the class to each day it occurs on
+            for day_idx in class_days:
+                classes_by_day[day_idx].append(c)
+
+        # Sort each list by start time
+        for c in classes_by_day:
+            c.sort(key=lambda _: _.start_time)
+
+        return classes_by_day
+
+    def update_password(self, new_password):
+        self.password = new_password
+        db.session.commit()
+
+    def delete_class(self, year, semester, class_name):
+        ClassTime.query.filter_by(
+            student_email=self.email, year=year, semester=semester,
+            class_name=class_name).delete()
+        db.session.commit()
+
+    def delete_all_classes(self):
+        for c in self.all_classes():
+            self.delete_class(year=c.year, semester=c.semester,
+                              class_name=c.class_name)
+        db.session.commit()
+
+    def delete_study_preference(self):
+        StudyTime.query.filter_by(student_email=self.email).delete()
+        db.session.commit()
+
+    def reset_account(self):
+        self.delete_all_classes()
+        self.delete_study_preference()
+
     def all_classes(self):
         """Returns all the classes associated with a student
         :rtype: List[ClassTime]
         """
         return ClassTime.query.filter_by(student_email=self.email).all()
 
-    def add_class(self, class_name, year, semester, location, start_time, end_time,
+    def add_class(self, class_name, year, semester, building, start_time, end_time,
                   week_days):
-        db.session.add(
-            ClassTime(student_email=self.email, class_name=class_name,
-                      year=year, semester=semester, location=location,
+        """Adds a class to a users account."""
+        ClassTime.add(student_email=self.email, class_name=class_name,
+                      year=year, semester=semester, building=building,
                       start_time=start_time, end_time=end_time,
-                      week_days=week_days))
-        db.session.commit()
+                      week_days=week_days)
 
     def study_preference(self):
+        """Returns a students study preference as a StudyTime object"""
         return StudyTime.get(self.email)
 
     @staticmethod
     def get(student_email):
         """Gets the student table entry associated with an email"""
         return Student.query.filter_by(email=student_email).first()
+
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:25} | {:25} | {:25} |'
+        print(header.format('email', 'first_name', 'last_name', 'password'))
+        [print(_) for _ in Student.query.all()]
+
+    def __str__(self):
+        # Don't print the user's password when __repr__ is called
+        p = ''
+        for _ in range(len(self.password)):
+            p += '*'
+        rep = '{:50} | {:25} | {:25} | {:25} |'
+        return rep.format(self.email, self.first_name, self.last_name, p)
 
     def __repr__(self):
         # Don't print the user's password when __repr__ is called
@@ -120,6 +213,10 @@ class Edge(db.Model):
     def dist(self):
         """Gets the distance of the edge"""
         return Location.dist(self.location1, self.location2)
+
+    def locations(self):
+        """Gets the distance of the edge"""
+        return self.location1, self.location2
 
     @staticmethod
     def get(location1, location2):
@@ -181,7 +278,7 @@ class ClassTime(db.Model):
         db.session.commit()
 
     def __repr__(self):
-        rep = ('Schedule(student_email={}, year={}, semester={}, '
+        rep = ('ClassTime(student_email={}, year={}, semester={}, '
                + 'class_name={}, building={}, start_time={}, '
                + 'end_time={}, week_days={})')
         return rep.format(self.student_email, self.year, self.semester,
@@ -197,11 +294,29 @@ class StudyTime(db.Model):
     min_cont_hours = db.Column(db.Float, nullable=False)
     max_cont_hours = db.Column(db.Float, nullable=False)
     break_time_hours = db.Column(db.Float, nullable=False)
+    earliest_time = db.Column(db.Time, nullable=False)
+    latest_time = db.Column(db.Time, nullable=False)
 
     @staticmethod
     def get(student_email):
         """Gets the study_time table entry associated with an email"""
         return StudyTime.query.filter_by(student_email=student_email).first()
+
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:15} | {:15} | {:15} | {:15} | {:15} | {:15} |'
+        print(header.format('student_email', 'weekly_hours', 'min_cont_hours',
+                            'max_cont_hours', 'break_time_hours',
+                            'earliest_time', 'latest_time'))
+        [print(_) for _ in StudyTime.query.all()]
+
+    def __str__(self):
+        rep = '{:50} | {:15} | {:15} | {:15} | {:16} |     {}    |     {}    |'
+        return rep.format(self.student_email, self.weekly_hours,
+                          self.min_cont_hours, self.max_cont_hours,
+                          self.break_time_hours, self.earliest_time,
+                          self.latest_time)
 
     def __repr__(self):
         rep = ('StudyTime(student_email={}, weekly_hours={}, min_cont_hours={},'
@@ -209,4 +324,18 @@ class StudyTime(db.Model):
         return rep.format(self.student_email, self.weekly_hours,
                           self.min_cont_hours, self.max_cont_hours,
                           self.break_time_hours)
+
+
+if __name__ == '__main__':
+    carlos = Student.get('cguerra5@masonlive.gmu.edu')
+    for d in carlos.get_weekly_schedule(year='2018', semester='spring'):
+        print(d)
+    carlos.update_password('new_password')
+    if ClassTime.get(student_email=carlos.email, class_name='CS333',
+                     year='2017', semester='Spring') is None:
+        carlos.add_class(class_name='CS333', year='2017', semester='Spring',
+                         start_time='09:00:00', end_time='10:15:00',
+                         building='Merten Hall', week_days='MWF')
+    else:
+        carlos.delete_class(year='2017', semester='Spring', class_name='CS333')
 

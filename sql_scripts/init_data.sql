@@ -1,18 +1,26 @@
 -- Inserts each building at Mason
 -- VALUES format:
 -- (building_name, is_study_location)
-INSERT INTO building VALUES ('Johnson Center', TRUE);
-INSERT INTO building VALUES ('Planetary Hall', TRUE);
-INSERT INTO building VALUES ('Exploratory Hall', TRUE);
+INSERT INTO building VALUES ('Aquatic and Fitness Center', FALSE);
+INSERT INTO building VALUES ('Art Building', TRUE);
+INSERT INTO building VALUES ('College Hall', TRUE);
 INSERT INTO building VALUES ('David King Hall', FALSE);
+INSERT INTO building VALUES ('East Building', FALSE);
+INSERT INTO building VALUES ('Enterprise Hall', TRUE);
+INSERT INTO building VALUES ('Exploratory Hall', TRUE);
+INSERT INTO building VALUES ('Fenwick Library', TRUE);
+INSERT INTO building VALUES ('Innovation Hall', TRUE);
+INSERT INTO building VALUES ('Johnson Center', TRUE);
+INSERT INTO building VALUES ('Music/Theater Building', TRUE);
+INSERT INTO building VALUES ('Merten Hall', TRUE);
+INSERT INTO building VALUES ('Nguyen Engineering Building', TRUE);
+INSERT INTO building VALUES ('Parking Lot C', FALSE);
+INSERT INTO building VALUES ('Planetary Hall', TRUE);
+INSERT INTO building VALUES ('Research Hall', TRUE);
 INSERT INTO building VALUES ('Sandy Creek Shuttle Stop', FALSE);
 INSERT INTO building VALUES ('Southside Dining Hall', TRUE);
+INSERT INTO building VALUES ('The Hub', TRUE);
 INSERT INTO building VALUES ('Tidewater', FALSE);
-INSERT INTO building VALUES ('Enterprise Hall', TRUE);
-INSERT INTO building VALUES ('Research Hall', TRUE);
-INSERT INTO building VALUES ('Nguyen Engineering Building', TRUE);
-INSERT INTO building VALUES ('Music/Theater Building', TRUE);
-INSERT INTO building VALUES ('College Hall', TRUE);
 
 -- Inserts all the locations (nodes) in the graph that represents the locations
 -- a student can travel to.
@@ -101,7 +109,7 @@ INSERT INTO location VALUES ('Rd16', 38.830966, -77.306902, NULL, FALSE);
 INSERT INTO location VALUES ('Rd17', 38.830912, -77.307042, NULL, FALSE);
 INSERT INTO location VALUES ('Rd18', 38.830863, -77.307140, NULL, FALSE);
 INSERT INTO location VALUES ('Rd19', 38.831007, -77.306807, NULL, FALSE);
-INSERT INTO edge VALUES ('DK1', 'DK2', TRUE);
+INSERT INTO edge VALUES ('DK1', 'Rd15', TRUE);
 INSERT INTO edge VALUES ('Rd15', 'DK2', TRUE);
 INSERT INTO edge VALUES ('DK2', 'DK3', TRUE);
 INSERT INTO edge VALUES ('DK3', 'Rd16', TRUE);
@@ -180,12 +188,131 @@ INSERT INTO edge VALUES ('Rd54', 'Rd41', TRUE);
 INSERT INTO location VALUES ('MT1', 38.829063, -77.307811, 'Music/Theater Building', FALSE);
 INSERT INTO location VALUES ('MT2', 38.829530, -77.308258, 'Music/Theater Building', FALSE);
 INSERT INTO location VALUES ('CH1', 38.829043, -77.307856, 'College Hall', FALSE);
-INSERT INTO edge VALUES ('JC9', 'MT1', TRUE);
+INSERT INTO location VALUES ('Rd100', 38.829189, -77.307464, NULL, FALSE);
+INSERT INTO edge VALUES ('Rd100', 'JC9', TRUE);
+INSERT INTO edge VALUES ('Rd100', 'MT1', TRUE);
 INSERT INTO edge VALUES ('MT1', 'CH1', TRUE);
 
--- Nguyen Engineering Building
+-- Nguyen Engineering Building Outline
 INSERT INTO location VALUES ('ENG1', 38.827790, -77.305061, 'Nguyen Engineering Building', FALSE);
+INSERT INTO location VALUES ('ENG2', 38.827332, -77.305030, 'Nguyen Engineering Building', FALSE);
+INSERT INTO location VALUES ('ENG3', 38.827280, -77.304641, 'Nguyen Engineering Building', FALSE);
+INSERT INTO location VALUES ('Rd61', 38.827594, -77.305871, NULL, FALSE);
+INSERT INTO location VALUES ('Rd67', 38.827456, -77.306235, NULL, FALSE);
+INSERT INTO location VALUES ('Rd68', 38.827402, -77.306101, NULL, FALSE);
+INSERT INTO location VALUES ('Rd69', 38.827348, -77.305952, NULL, FALSE);
+INSERT INTO location VALUES ('Rd70', 38.827193, -77.306204, NULL, FALSE);
+INSERT INTO location VALUES ('Rd71', 38.827073, -77.305936, NULL, FALSE);
+INSERT INTO location VALUES ('Rd72', 38.827053, -77.305694, NULL, FALSE);
+INSERT INTO location VALUES ('Rd73', 38.826956, -77.305522, NULL, FALSE);
+INSERT INTO location VALUES ('Rd74', 38.827047, -77.305424, NULL, FALSE);
+INSERT INTO location VALUES ('Rd75', 38.827211, -77.305424, NULL, FALSE);
+INSERT INTO location VALUES ('Rd76', 38.827340, -77.305287, NULL, FALSE);
+INSERT INTO location VALUES ('Rd77', 38.827367, -77.305207, NULL, FALSE);
+INSERT INTO location VALUES ('Rd78', 38.827150, -77.304981, NULL, FALSE);
+INSERT INTO location VALUES ('Rd79', 38.827039, -77.304762, NULL, FALSE);
+INSERT INTO location VALUES ('Rd80', 38.827149, -77.304638, NULL, FALSE);
+INSERT INTO location VALUES ('Rd81', 38.827113, -77.304453, NULL, FALSE);
+INSERT INTO location VALUES ('Rd82', 38.826965, -77.304391, NULL, FALSE);
+INSERT INTO location VALUES ('Rd83', 38.827562, -77.304008, NULL, FALSE);
+INSERT INTO location VALUES ('Rd84', 38.827694, -77.304375, NULL, FALSE);
+INSERT INTO location VALUES ('Rd85', 38.827481, -77.304510, NULL, FALSE);
+INSERT INTO location VALUES ('Rd86', 38.827674, -77.304859, NULL, FALSE);
+INSERT INTO location VALUES ('Rd87', 38.827695, -77.304895, NULL, FALSE);
 INSERT INTO edge VALUES ('Rd51', 'ENG1', TRUE);
+INSERT INTO edge VALUES ('Rd51', 'Rd61', TRUE);
+INSERT INTO edge VALUES ('Rd61', 'Rd67', TRUE);
+INSERT INTO edge VALUES ('Rd67', 'Rd68', TRUE);
+INSERT INTO edge VALUES ('Rd68', 'Rd69', TRUE);
+INSERT INTO edge VALUES ('Rd68', 'Rd70', TRUE);
+INSERT INTO edge VALUES ('Rd70', 'Rd71', TRUE);
+INSERT INTO edge VALUES ('Rd71', 'Rd72', TRUE);
+INSERT INTO edge VALUES ('Rd72', 'Rd73', TRUE);
+INSERT INTO edge VALUES ('Rd73', 'Rd74', TRUE);
+INSERT INTO edge VALUES ('Rd74', 'Rd75', TRUE);
+INSERT INTO edge VALUES ('Rd75', 'Rd76', TRUE);
+INSERT INTO edge VALUES ('Rd76', 'Rd77', TRUE);
+INSERT INTO edge VALUES ('Rd77', 'ENG2', TRUE);
+INSERT INTO edge VALUES ('ENG2', 'Rd78', TRUE);
+INSERT INTO edge VALUES ('Rd78', 'Rd79', TRUE);
+INSERT INTO edge VALUES ('Rd79', 'Rd80', TRUE);
+INSERT INTO edge VALUES ('Rd80', 'Rd81', TRUE);
+INSERT INTO edge VALUES ('Rd81', 'Rd82', TRUE);
+INSERT INTO edge VALUES ('Rd82', 'Rd83', TRUE);
+INSERT INTO edge VALUES ('Rd83', 'Rd84', TRUE);
+INSERT INTO edge VALUES ('Rd84', 'Rd85', TRUE);
+INSERT INTO edge VALUES ('Rd85', 'ENG3', TRUE);
+INSERT INTO edge VALUES ('Rd85', 'Rd86', TRUE);
+INSERT INTO edge VALUES ('Rd86', 'Rd87', TRUE);
+INSERT INTO edge VALUES ('Rd87', 'ENG1', TRUE);
+
+-- Fenwick Library Outline
+INSERT INTO location VALUES ('FL1', 38.831796, -77.307521, 'Fenwick Library', FALSE);
+INSERT INTO location VALUES ('FL2', 38.832010, -77.307627, 'Fenwick Library', FALSE);
+INSERT INTO location VALUES ('Rd56', 38.832628, -77.307986, NULL, FALSE);
+INSERT INTO edge VALUES ('FL1', 'FL2', TRUE);
+INSERT INTO edge VALUES ('FL2', 'Rd56', TRUE);
+
+-- Merten Hall Outline
+INSERT INTO location VALUES ('MH1', 38.834854, -77.307871, 'Merten Hall', FALSE);
+INSERT INTO location VALUES ('Rd60', 38.834718, -77.307859, NULL, FALSE);
+INSERT INTO edge VALUES ('Rd60', 'MH1', TRUE);
+
+-- East Building Outline
+INSERT INTO location VALUES ('EB1', 38.833107, -77.308039, 'East Building', FALSE);
+
+-- Art Building Outline
+INSERT INTO location VALUES ('AB1', 38.827739, -77.305939, 'Art Building', FALSE);
+INSERT INTO location VALUES ('AB2', 38.828266, -77.306287, 'Art Building', FALSE);
+INSERT INTO location VALUES ('Rd62', 38.828199, -77.306241, NULL, FALSE);
+INSERT INTO location VALUES ('Rd63', 38.828494, -77.306438, NULL, FALSE);
+INSERT INTO location VALUES ('Rd64', 38.828384, -77.306712, NULL, FALSE);
+INSERT INTO edge VALUES ('AB1', 'Rd62', TRUE);
+INSERT INTO edge VALUES ('Rd62', 'AB2', TRUE);
+INSERT INTO edge VALUES ('AB2', 'Rd63', TRUE);
+INSERT INTO edge VALUES ('Rd63', 'Rd64', TRUE);
+
+-- Innovation Hall Outline
+INSERT INTO location VALUES ('IN1', 38.828382, -77.307272, 'Innovation Hall', FALSE);
+INSERT INTO location VALUES ('IN2', 38.828700, -77.307528, 'Innovation Hall', FALSE);
+INSERT INTO location VALUES ('Rd65', 38.828699, -77.306731, NULL, FALSE);
+INSERT INTO location VALUES ('Rd66', 38.828202, -77.307159, NULL, FALSE);
+INSERT INTO edge VALUES ('Rd64', 'Rd65', TRUE);
+INSERT INTO edge VALUES ('Rd64', 'Rd66', TRUE);
+INSERT INTO edge VALUES ('Rd66', 'IN1', TRUE);
+
+-- Outline of Aquatic and Fitness Center
+INSERT INTO location VALUES ('AFC1', 38.826672, -77.304375, 'Aquatic and Fitness Center', FALSE);
+INSERT INTO location VALUES ('Rd90', 38.826695, -77.304861, NULL, FALSE);
+INSERT INTO location VALUES ('Rd91', 38.826472, -77.304815, NULL, FALSE);
+INSERT INTO location VALUES ('Rd92', 38.826386, -77.304960, NULL, FALSE);
+INSERT INTO edge VALUES ('Rd90', 'Rd91', TRUE);
+INSERT INTO edge VALUES ('Rd91', 'AFC1', TRUE);
+INSERT INTO edge VALUES ('Rd91', 'Rd92', TRUE);
+
+-- Outline of Parking Lot C
+INSERT INTO location VALUES ('LC1', 38.825818, -77.305159, 'Parking Lot C', FALSE);
+
+-- Outline of the Hub
+INSERT INTO location VALUES ('H1', 38.830996, -77.305413, 'The Hub', FALSE);
+INSERT INTO location VALUES ('H2', 38.830647, -77.305281, 'The Hub', FALSE);
+INSERT INTO location VALUES ('H3', 38.830347, -77.304862, 'The Hub', FALSE);
+INSERT INTO location VALUES ('H4', 38.830347, -77.304862, 'The Hub', FALSE);
+INSERT INTO location VALUES ('Rd94', 38.830990, -77.305558, NULL, FALSE);
+INSERT INTO location VALUES ('Rd95', 38.830828, -77.306008, NULL, FALSE);
+INSERT INTO location VALUES ('Rd96', 38.830534, -77.305611, NULL, FALSE);
+INSERT INTO location VALUES ('Rd97', 38.830444, -77.305248, NULL, FALSE);
+INSERT INTO location VALUES ('Rd98',38.830169, -77.304725 , NULL, FALSE);
+INSERT INTO edge VALUES ('H1', 'Rd94', TRUE);
+INSERT INTO edge VALUES ('Rd94', 'Rd95', TRUE);
+INSERT INTO edge VALUES ('Rd95', 'Rd6', TRUE);
+INSERT INTO edge VALUES ('Rd6', 'Rd96', TRUE);
+INSERT INTO edge VALUES ('Rd96', 'H2', TRUE);
+INSERT INTO edge VALUES ('H2', 'Rd97', TRUE);
+INSERT INTO edge VALUES ('Rd96', 'Rd97', TRUE);
+INSERT INTO edge VALUES ('Rd97', 'H3', TRUE);
+INSERT INTO edge VALUES ('H3', 'H4', TRUE);
+INSERT INTO edge VALUES ('H4', 'Rd98', TRUE);
 
 -- Building connections
 INSERT INTO location VALUES ('Rd29', 38.831558, -77.306129, NULL, FALSE);
@@ -200,6 +327,15 @@ INSERT INTO location VALUES ('Rd37', 38.830878, -77.307437, NULL, FALSE);
 INSERT INTO location VALUES ('Rd38', 38.829441, -77.305993, NULL, FALSE);
 INSERT INTO location VALUES ('Rd39', 38.829380, -77.306146, NULL, FALSE);
 INSERT INTO location VALUES ('Rd55', 38.829241, -77.306937, NULL, FALSE);
+INSERT INTO location VALUES ('Rd57', 38.833483, -77.308028, NULL, FALSE);
+INSERT INTO location VALUES ('Rd58', 38.833615, -77.308041, NULL, FALSE);
+INSERT INTO location VALUES ('Rd59', 38.834140, -77.307970, NULL, FALSE);
+INSERT INTO location VALUES ('Rd88', 38.826785, -77.304906, NULL, FALSE);
+INSERT INTO location VALUES ('Rd89', 38.826738, -77.304876, NULL, FALSE);
+INSERT INTO location VALUES ('Rd93', 38.825862, -77.305078, NULL, FALSE);
+INSERT INTO location VALUES ('Rd99', 38.830019, -77.304969, NULL, FALSE);
+INSERT INTO location VALUES ('Rd101', 38.829004, -77.307376, NULL, FALSE);
+INSERT INTO location VALUES ('Rd102', 38.828860, -77.307379, NULL, FALSE);
 INSERT INTO edge VALUES ('Rd14', 'Rd3', TRUE);
 INSERT INTO edge VALUES ('PH1', 'Rd2', TRUE);
 INSERT INTO edge VALUES ('PH1', 'JC1', TRUE);
@@ -227,7 +363,27 @@ INSERT INTO edge VALUES ('Rd50', 'Rd12', FALSE);
 INSERT INTO edge VALUES ('Rd55', 'Rd47', TRUE);
 INSERT INTO edge VALUES ('Rd55', 'Rd48', TRUE);
 INSERT INTO edge VALUES ('Rd55', 'JC9', TRUE);
+INSERT INTO edge VALUES ('Rd33', 'FL1', TRUE);
 INSERT INTO edge VALUES ('MT2', 'JC8', TRUE);
+INSERT INTO edge VALUES ('Rd56', 'EB1', TRUE);
+INSERT INTO edge VALUES ('EB1', 'Rd57', TRUE);
+INSERT INTO edge VALUES ('Rd57', 'Rd58', TRUE);
+INSERT INTO edge VALUES ('Rd58', 'Rd59', TRUE);
+INSERT INTO edge VALUES ('Rd59', 'Rd60', TRUE);
+INSERT INTO edge VALUES ('AB1', 'Rd61', TRUE);
+INSERT INTO edge VALUES ('Rd43', 'Rd63', TRUE);
+INSERT INTO edge VALUES ('Rd65', 'Rd44', TRUE);
+INSERT INTO edge VALUES ('Rd78', 'Rd88', TRUE);
+INSERT INTO edge VALUES ('Rd88', 'Rd89', TRUE);
+INSERT INTO edge VALUES ('Rd89', 'Rd90', TRUE);
+INSERT INTO edge VALUES ('Rd92', 'Rd93', TRUE);
+INSERT INTO edge VALUES ('Rd93', 'LC1', TRUE);
+INSERT INTO edge VALUES ('Rd94', 'Rd21', TRUE);
+INSERT INTO edge VALUES ('Rd98', 'Rd99', TRUE);
+INSERT INTO edge VALUES ('Rd99', 'Rd9', TRUE);
+INSERT INTO edge VALUES ('Rd100', 'Rd101', TRUE);
+INSERT INTO edge VALUES ('Rd101', 'Rd102', TRUE);
+INSERT INTO edge VALUES ('Rd102', 'IN2', TRUE);
 
 -- Inserts all the restaurants into the restaurant table
 -- VALUES format:
@@ -244,12 +400,18 @@ INSERT INTO student VALUES ('cguerra5@masonlive.gmu.edu', 'Carlos', 'Guerra', 'p
 -- Inserts student class times into the class_time table
 -- VALUES format:
 -- (student_email, year, semester, class_name, building, start_time, end_time, week_days)
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'CS321', 'Planetary Hall', '12:00:00', '13:15:00', 'MW');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'STAT350', 'Enterprise Hall', '15:00:00', '16:15:00', 'MW');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'Spring', 'OR442', 'Music/Theater Building', '13:30:00', '16:10:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'CS321', 'Planetary Hall', '12:00:00', '13:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'STAT350', 'Enterprise Hall', '15:00:00', '16:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'OR442', 'Music/Theater Building', '13:30:00', '16:10:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'PHYS260-001', 'Nguyen Engineering Building', '08:30:00', '09:20:00', 'MWF');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'PHYS260-302', 'Planetary Hall', '11:30:00', '12:20:00', 'F');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'PHYS261', 'Planetary Hall', '16:30:00', '19:10:00', 'W');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'CS367', 'Art Building', '12:00:00', '13:15:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'MATH203', 'Innovation Hall', '10:30:00', '11:45:00', 'MW');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'CS330', 'Merten Hall', '15:00:00', '16:15:00', 'MW');
 
 -- Inserts student study preferences into the study_time table
 -- VALUES format:
 -- (student_email, weekly_hours, min_cont_hours, max_cont_hours)
-INSERT INTO study_time VALUES ('cguerra5@masonlive.gmu.edu', 8.0, 0.5, 1.0, 0.16666667);
+INSERT INTO study_time VALUES ('cguerra5@masonlive.gmu.edu', 8.0, 0.5, 1.0, 0.16666667, '09:00:00', '21:00:00');
 

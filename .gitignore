@@ -1,3 +1,4 @@
+
 # Prerequisites
 *.d
 
@@ -42,8 +43,13 @@ MyEC2KeyPair.pem
 
 # Project Specific (C++)
 bin/
+include/
 CMakeFiles/
 Makefile
 CMakeCache.txt
 cmake_install.cmake
+__pycache__/
+venv/
+venv/*
+maps_api.txt
 
