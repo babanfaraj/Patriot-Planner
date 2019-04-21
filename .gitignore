@@ -51,4 +51,5 @@ cmake_install.cmake
 __pycache__/
 venv/
 venv/*
+maps_api.txt
 

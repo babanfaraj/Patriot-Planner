@@ -8,10 +8,11 @@ def visualize_map(path=None, label_nodes=True):
     """Displays a connected graph of the map"""
     edges = None
     path_locs = None
-    if path is not None and len(path) > 1:
+    if path is not None:
         path_locs = [_.location_name for _ in path]
-        edges = [[path[i - 1].location_name, path[i].location_name]
-                 for i in range(1, len(path))]
+        if len(path) > 1:
+            edges = [[path[i - 1].location_name, path[i].location_name]
+                     for i in range(1, len(path))]
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(111)
     plotted_locs = set()
