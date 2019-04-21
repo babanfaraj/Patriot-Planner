@@ -2,7 +2,9 @@ from python_src.models import *
 from python_src.db_connection import *
 import datetime
 
-
+#Returns all the study times for a given week
+#First dimension of array indicates the day of the week
+#Second dimension indicates study block in a given day
 def build_schedule(email, semester, year):
   cur_student = Student.get(email)
   weekly_schedule = [[], [], [], [], []]
@@ -68,6 +70,7 @@ def build_schedule(email, semester, year):
   print(study_times_datetime)
   return study_times_datetime
 
+#Finds an individual study time
 def find_study_time(daily_available, study_length):
   possible_time = []
   for available_time in daily_available:
@@ -78,7 +81,7 @@ def find_study_time(daily_available, study_length):
   return best_study_time
 
 
-
+#Finds all available times in a day
 def find_available_times(daily_unavailable, ideal_hours, break_time_hours):
   daily_available = []
   # Corrects for break_time_hours adjustment that happens in code below. No need for break time between start and end of day
@@ -93,6 +96,7 @@ def find_available_times(daily_unavailable, ideal_hours, break_time_hours):
 
   return daily_available
 
+#finds all unavailable times in a week
 def find_unavailable_times(weekly_schedule):
   unavailable_times = [[], [], [], [], []]
   i = 0
@@ -108,16 +112,16 @@ def find_unavailable_times(weekly_schedule):
   return unavailable_times
 
 
+#Key for sorting class time (Remove soon)
 def sort_key(class_time):
   return class_time.start_time
 
+#Sorts uavailable times
 def sort_unavailable(daily_unavailable):
   return daily_unavailable[0]
 
-def find_possible_study_times(weekly_schedule, min_cont_hours, study_hours, break_time_hours):
-  open_spots = [[], [], [], [], []]
 
-
+#Removes all classes that are not curently being taken
 def filter_by_semester(student_classes, semester, year):
   i = 0
   while i < len(student_classes):
@@ -126,7 +130,7 @@ def filter_by_semester(student_classes, semester, year):
     else:
       i += 1
 
-
+#Assign classes to days of the week
 def set_classes(weekly_schedule, student_classes):
   for _class in student_classes:
     if "M" in _class.week_days:
@@ -141,4 +145,4 @@ def set_classes(weekly_schedule, student_classes):
       weekly_schedule[4].append(_class)
 
 
-build_schedule("cguerra5@masonlive.gmu.edu", "Spring", '2018')
+#build_schedule("cguerra5@masonlive.gmu.edu", "Spring", '2018')
