@@ -2,6 +2,7 @@ from python_src.models import *
 from python_src.db_connection import *
 from python_src.path_finding import get_best_path
 import datetime
+import math
 
 """
 Returns all the study times for a given week
@@ -172,8 +173,8 @@ def set_classes(weekly_schedule, student_classes):
 
 
 def map_building_to_study_time(weekly_schedule, study_times):
-    print(weekly_schedule)
-    print(study_times)
+  #  print(weekly_schedule)
+   # print(study_times)
     study_locations = [[], [], [], [], []]
     start_end_buildings = [[], [], [], [], []]
     for i in range(len(study_times)):
@@ -181,7 +182,7 @@ def map_building_to_study_time(weekly_schedule, study_times):
             start_end_buildings[i].append(find_classroom_before_after(weekly_schedule[i], study_times[i][k]))
 
 
-    print(start_end_buildings)
+   # print(start_end_buildings)
     for i in range(len(start_end_buildings)):
         for k in range(len(start_end_buildings[i])):
             if start_end_buildings[i][k][0].is_study_location:
@@ -191,10 +192,33 @@ def map_building_to_study_time(weekly_schedule, study_times):
             else:
                 spot_on_path = find_study_spot_on_path(start_end_buildings[i][k][0], start_end_buildings[i][k][1])
                 if spot_on_path[0]:
-                    print(spot_on_path[1])
+                    study_locations[i].append(spot_on_path[1])
+                else:
+                    bisect_path(start_end_buildings[i][k][0], start_end_buildings[i][k][1])
 
     print(study_locations)
     return 0
+
+
+def bisect_path(start_building, end_building):
+    start_locations = start_building.entrances()
+    end_locations = end_building.entrances()
+    graph = get_graph()
+
+    min_path_weight = math.inf
+    for i in range(len(start_locations)):
+        for k in range(len(end_locations)):
+            temp_path = get_best_path(graph, start_locations[i], end_locations[k])
+            if temp_path[1] < min_path_weight:
+                best_path = temp_path[0]
+
+    middle_location = best_path[round(len(best_path)/2)]
+
+    all_buildings = Building.query.all()
+    for building in all_buildings
+
+    print(middle_location)
+
 
 
 def find_study_spot_on_path(start_building, end_building):
@@ -205,10 +229,10 @@ def find_study_spot_on_path(start_building, end_building):
         for k in range((len(end_locations))):
             path = get_best_path(graph, start_locations[i], end_locations[k])
             for l in range(len(path)):
-                loc_building = path[0][i].building
-                if loc_building.is_study_location:
+                loc_building = Building.get(path[0][i].building)
+                if loc_building and loc_building.is_study_location:
                     print(loc_building)
-                    return loc_building
+                    return True, loc_building
     return False, ''
 
 def find_classroom_before_after(daily_schedule, single_study_time):
@@ -241,7 +265,7 @@ def find_classroom_before_after(daily_schedule, single_study_time):
 
 
 def find_closest_value(value, _list):
-    closest_distance = 9999
+    closest_distance = math.inf
     index = -1
     for i in range(len(_list)):
         if abs(value - _list[i]) < closest_distance:
