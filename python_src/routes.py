@@ -1,5 +1,6 @@
 from python_src import app
 from flask import render_template
+from python_src.forms import PasswordChange
 
 
 @app.route('/')
@@ -24,9 +25,10 @@ def blog():
     return render_template("edit_schedule.html")
 
 
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 def blog_details():
-    return render_template("settings.html")
+    form = PasswordChange()
+    return render_template("settings.html",form=form,title="password_change")
 
 
 
