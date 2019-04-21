@@ -31,8 +31,8 @@ def change_password():
 
     if form.validate_on_submit():
         flash('Password Changed', 'success')
-        print(form.new_password)
-        print(form.confirm_new_password)
+        print(form.new_password.data)
+        print(form.confirm_new_password.data)
     return render_template("settings.html", form=form, title="password_change")
 
 
