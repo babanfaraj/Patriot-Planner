@@ -2,9 +2,13 @@ from python_src.models import *
 from python_src.db_connection import *
 import datetime
 
-#Returns all the study times for a given week
-#First dimension of array indicates the day of the week
-#Second dimension indicates study block in a given day
+"""
+Returns all the study times for a given week
+First dimension of array indicates the day of the week
+Second dimension indicates study block in a given day
+"""
+
+
 def build_schedule(email, semester, year):
     cur_student = Student.get(email)
     #weekly_schedule = [[], [], [], [], []]
@@ -83,6 +87,7 @@ def find_study_time(daily_available, study_length):
    # print(possible_time)
     best_study_time = possible_time[round((len(possible_time)-1)/2)]
     return best_study_time
+
 
 
 #Finds all available times in a day
