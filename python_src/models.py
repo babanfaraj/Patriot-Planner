@@ -146,9 +146,14 @@ class Student(db.Model):
         StudyTime.query.filter_by(student_email=self.email).delete()
         db.session.commit()
 
+    def delete_meal_preference(self):
+        MealTime.query.filter_by(student_email=self.email).delete()
+        db.session.commit()
+
     def reset_account(self):
         self.delete_all_classes()
         self.delete_study_preference()
+        self.delete_meal_preference()
 
     def all_classes(self):
         """Returns all the classes associated with a student
@@ -167,6 +172,10 @@ class Student(db.Model):
     def study_preference(self):
         """Returns a students study preference as a StudyTime object"""
         return StudyTime.get(self.email)
+
+    def meal_preference(self):
+        """Returns a students meal preference as a StudyTime object"""
+        return MealTime.get(self.email)
 
     @staticmethod
     def get(student_email):
@@ -316,10 +325,37 @@ class StudyTime(db.Model):
 
     def __repr__(self):
         rep = ('StudyTime(student_email={}, weekly_hours={}, min_cont_hours={},'
-               + ' max_cont_hours={}, break_time_hours={})')
+               + ' max_cont_hours={}, break_time_hours={}, earliest_time={},'
+               + ' latest_time={})')
         return rep.format(self.student_email, self.weekly_hours,
                           self.min_cont_hours, self.max_cont_hours,
-                          self.break_time_hours)
+                          self.break_time_hours, self.earliest_time,
+                          self.latest_time)
+
+
+class MealTime(db.Model):
+    __tablename__ = 'meal_time'
+    student_email = db.Column(db.String(50), db.ForeignKey('student.email'),
+                              primary_key=True)
+    daily_meal_num = db.Column(db.Integer, nullable=False)
+    min_meal_hours = db.Column(db.Float, nullable=False)
+    max_meal_hours = db.Column(db.Float, nullable=False)
+    earliest_time = db.Column(db.Time, nullable=False)
+    latest_time = db.Column(db.Time, nullable=False)
+
+    def __str__(self):
+        rep = '{:50} | {:15} | {:15} | {:15} |     {}    |     {}    |'
+        return rep.format(self.student_email, self.daily_meal_num,
+                          self.min_meal_hours, self.max_meal_hours,
+                          self.earliest_time, self.latest_time)
+
+    def __repr__(self):
+        rep = ('MealTime(student_email={}, daily_meal_num={},'
+               + ' min_meal_hours={}, max_meal_hours={}, earliest_time={},'
+               + ' latest_time={})')
+        return rep.format(self.student_email, self.daily_meal_num,
+                          self.min_meal_hours, self.max_meal_hours,
+                          self.earliest_time, self.latest_time)
 
 
 if __name__ == '__main__':

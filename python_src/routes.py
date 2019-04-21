@@ -1,5 +1,8 @@
 from python_src import app
 from flask import render_template
+from flask_wtf import FlaskForm
+from wtforms import StringField, BooleanField
+from wtforms.validators import InputRequired, Email, Length
 
 
 @app.route('/')
