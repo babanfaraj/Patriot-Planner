@@ -2,7 +2,10 @@ from python_src.models import Location, Building
 from python_src.db_connection import get_graph
 from python_src.db_connection import *
 from python_src.viz import visualize_map
+import webbrowser
 
+def display_path(url):
+    webbrowser.open_new_tab(url)
 
 def find_optimal_class_path(start_loc, classes):
     """
@@ -118,12 +121,16 @@ if __name__ == '__main__':
     #print("Shortest Path: ",shortest_path[1])
     stud1 = Student.get('cguerra5@masonlive.gmu.edu')
     stud1.study_preference()
-    optimal_class_path=find_optimal_class_path(start, stud1.all_classes())
+    weekly_classes = stud1.get_weekly_schedule(year=2019, semester='spring')
+    optimal_class_path = find_optimal_class_path(start, stud1.all_classes())
     print(optimal_class_path)
     #for loc in shortest_path:
     #    print(loc.location_name)
     #visualize_map(path=optimal_class_path[0])
+    url = "http://www.google.com/"
+    webbrowser.open_new_tab(url)
+
     for path in optimal_class_path:
-        visualize_map(path=path)
-        print(path_to_gmaps_link(path))
+        #visualize_map(path=path)
+        #display_path(path_to_gmaps_link(path))
 
