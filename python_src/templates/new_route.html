@@ -7,13 +7,54 @@
     <title>New Route - Patriot Planner</title>
 </head>
 <body>
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #006940;">
+        <a class="nav-link" href="/home">
+            <img src="/static/img/PPLogoWhite.png" width="100" height="50" class="d-inline-block align-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">Home<span class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="/new_route">New Route</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/edit_schedule">Edit Schedule</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="settings">
+                        Settings
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="index"></span> Sign Out</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+
 <div class="container half-width">
+    <h5 style="text-align:center;"> Need to go somewhere else?</h5>
     <div class="input-group">
-        <select class="custom-select" id="inputGroupSelect03" aria-label="Example select with button addon">
-            <option selected>Starting Location</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+        <select class="custom-select" id="inputGroupSelect03" aria-label="Example select with button addon" method="GET"
+                action="/home">
+            <option selected>Starting Point</option>
+            {% for all_building_names in all_building_names %}
+            <option value="{{all_building_names}}">{{all_building_names}}</option>
+            "
+            {% endfor %}
         </select>
     </div>
 
@@ -22,9 +63,10 @@
     <div class="input-group">
         <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">
             <option selected>Destination</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+            {% for all_building_names in all_building_names %}
+            <option value="{{all_building_names}}">{{all_building_names}}</option>
+            "
+            {% endfor %}
         </select>
         <div class="input-group-append">
             <button class="btn btn-outline-secondary" type="button">Go!</button>
