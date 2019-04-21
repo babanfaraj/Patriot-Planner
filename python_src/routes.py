@@ -28,7 +28,6 @@ def blog():
 @app.route('/settings', methods=['GET', 'POST'])
 def settings():
     form = PasswordChange()
-
     if form.validate_on_submit():
         # Iterate through database until current user is reached
         # Change users password
