@@ -26,6 +26,10 @@ class Building(db.Model):
         print(header.format('building_name', 'is_study_location'))
         [print(_) for _ in Building.query.all()]
 
+    @staticmethod
+    def all_names():
+        return [_.building_name for _ in Building.query.all()]
+
     def __str__(self):
         rep = '{:50} | {:20} | '
         return rep.format(self.building_name, self.is_study_location)
@@ -334,8 +338,4 @@ if __name__ == '__main__':
                          building='Merten Hall', week_days='MWF')
     else:
         carlos.delete_class(year='2017', semester='Spring', class_name='CS333')
-
-    carlos.delete_all_classes()
-    carlos.delete_study_preference()
-
 
