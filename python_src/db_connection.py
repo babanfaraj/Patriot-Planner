@@ -28,8 +28,8 @@ def are_valid_credentials(email, password):
     :return: Whether or not the user exists.
     :rtype: bool
     """
-    return 0 < len(Student.query.filter_as(email=email,
-                                           password=password).all())
+    return Student.query.filter_by(email=email,
+                                   password=password).first() is not None
 
 
 def create_student(student_info, classes, study_preference):

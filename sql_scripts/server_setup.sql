@@ -74,3 +74,16 @@ CREATE TABLE study_time (
     PRIMARY KEY (student_email)
 );
 
+CREATE TABLE meal_time (
+    student_email VARCHAR(50),
+    daily_meal_num INTEGER NOT NULL,
+    min_meal_hours FLOAT NOT NULL,
+    max_meal_hours FLOAT NOT NULL,
+    earliest_time TIME NOT NULL,
+    latest_time TIME NOT NULL,
+
+    FOREIGN KEY (student_email)
+        REFERENCES student(email),
+    PRIMARY KEY (student_email)
+);
+
