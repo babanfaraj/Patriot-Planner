@@ -1,5 +1,6 @@
 from python_src.models import *
 from python_src.db_connection import *
+from python_src.path_finding import get_best_path
 import datetime
 
 """
@@ -173,15 +174,42 @@ def set_classes(weekly_schedule, student_classes):
 def map_building_to_study_time(weekly_schedule, study_times):
     print(weekly_schedule)
     print(study_times)
-    all_buildings = Building.query.all()
-    print(all_buildings[9])
     study_locations = [[], [], [], [], []]
+    start_end_buildings = [[], [], [], [], []]
     for i in range(len(study_times)):
         for k in range(len(study_times[i])):
-            study_locations[i].append(find_classroom_before_after(weekly_schedule[i], study_times[i][k]))
+            start_end_buildings[i].append(find_classroom_before_after(weekly_schedule[i], study_times[i][k]))
+
+
+    print(start_end_buildings)
+    for i in range(len(start_end_buildings)):
+        for k in range(len(start_end_buildings[i])):
+            if start_end_buildings[i][k][0].is_study_location:
+                study_locations[i].append(start_end_buildings[i][k][0])
+            elif start_end_buildings[i][k][1].is_study_location:
+                study_locations[i].append(start_end_buildings[i][k][1])
+            else:
+                spot_on_path = find_study_spot_on_path(start_end_buildings[i][k][0], start_end_buildings[i][k][1])
+                if spot_on_path[0]:
+                    print(spot_on_path[1])
 
     print(study_locations)
     return 0
+
+
+def find_study_spot_on_path(start_building, end_building):
+    start_locations = start_building.entrances()
+    end_locations = end_building.entrances()
+    graph = get_graph()
+    for i in range(len(start_locations)):
+        for k in range((len(end_locations))):
+            path = get_best_path(graph, start_locations[i], end_locations[k])
+            for l in range(len(path)):
+                loc_building = path[0][i].building
+                if loc_building.is_study_location:
+                    print(loc_building)
+                    return loc_building
+    return False, ''
 
 def find_classroom_before_after(daily_schedule, single_study_time):
     all_buildings = Building.query.all()
@@ -210,6 +238,7 @@ def find_classroom_before_after(daily_schedule, single_study_time):
     #print(class_end_times)
     #print(class_before, class_after)
     return class_before, class_after
+
 
 def find_closest_value(value, _list):
     closest_distance = 9999
