@@ -214,7 +214,7 @@ def bisect_path(start_building, end_building):
     for building in all_buildings:
         if building.is_study_location:
             all_study_spots.append(building)
-            break
+
 
     min_path_weight = math.inf
     for i in range(len(all_study_spots)):
