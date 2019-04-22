@@ -77,10 +77,11 @@ def build_schedule(email, semester, year):
         for k in range(len(study_times[i])):
             study_time_and_buildings[i].append(StudyInfo(study_times_datetime[i][k][0], study_times_datetime[i][k][1], selected_buildings[i][k]))
  #   print(study_time_and_buildings)
-    for prtday in study_time_and_buildings:
-        for eachpart in prtday:
-            print(eachpart.start_time, eachpart.end_time, eachpart.building)
-    return study_time_and_buildings
+    for i in range(len(weekly_schedule)):
+        for k in range(len(study_time_and_buildings[i])):
+            weekly_schedule[i].append(study_time_and_buildings[i][k])
+        sorted(weekly_schedule[i], key=sort_study_classes)
+    return weekly_schedule
 
 #Finds an individual study time
 def find_study_time(daily_available, study_length):
@@ -97,6 +98,9 @@ def find_study_time(daily_available, study_length):
     best_study_time = possible_time[round((len(possible_time)-1)/2)]
     return best_study_time
 
+
+def sort_study_classes(block):
+    return block.start_time
 
 
 def find_available_times(daily_unavailable, ideal_hours, break_time_hours):

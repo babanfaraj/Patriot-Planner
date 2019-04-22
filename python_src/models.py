@@ -3,7 +3,7 @@ import geopy.distance
 from datetime import datetime
 from python_src import db
 from flask_login import UserMixin
-
+from python_src.build_schedule import build_schedule
 
 class Student(db.Model, UserMixin):
     __tablename__ = 'student'
@@ -79,6 +79,20 @@ class Student(db.Model, UserMixin):
             c.sort(key=lambda _: _.start_time)
 
         return classes_by_day
+
+    def get_weekly_schedule_study(self):
+        today = datetime.today()
+        year = str(today.year)
+
+        if today.month in [1, 2, 3, 4, 5]:
+            semester = 'spring'
+        elif today.month in [8, 9, 10, 11, 12]:
+            semester = 'fall'
+        else:
+            semester = 'summer'
+
+        full_schedule = build_schedule(self.email, semester, year)
+        return full_schedule
 
     def update_password(self, new_password):
         self.password = new_password
@@ -402,6 +416,7 @@ class StudyInfo:
         self.start_time = start_time
         self.end_time = end_time
         self.building = building
+        self.class_name = 'Break Time'
 
 
 if __name__ == '__main__':
