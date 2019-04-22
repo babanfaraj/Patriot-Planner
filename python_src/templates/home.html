@@ -66,12 +66,12 @@
         </tr>
         </thead>
         <tbody>
-        {% for i, c in enumerate(current_weekly_schedule) %}
-        <tr id="event{{i}}">
-            <td>{{c.class_name}}</td>
-            <td>{{c.location}}</td>
-            <td>{{c.start_time}}</td>
-            <td>{{c.end_time}}</td>
+        {% for c, link in current_weekly_schedule %}
+        <tr>
+            <td>{{ c.class_name }} </td>
+            <td>{{ c.building }}</td>
+            <td>{{ c.start_time }} - {{ c.end_time }}</td>
+            <td><button onclick="window.location.href = '{{ link }}';"> Click Here </button></td>
         </tr>
         {% endfor %}
 

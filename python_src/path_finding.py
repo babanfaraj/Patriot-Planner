@@ -26,14 +26,15 @@ def find_optimal_class_path(start_loc, classes):
     current_best_path = None
     #print("First Class: ", classes[0])
     # building_entrances = Building.get(classes[0].building).entrances()
-    closest_pair = []
-    min_dist = float('Inf')
-    for end in Building.get(classes[0].building).entrances():
-        dist = Location.dist(start_loc, end)
-        if min_dist > dist:
-            min_dist = dist
-            closest_pair = [start_loc, end]
-    optimal_path.append(get_best_path(get_graph(), closest_pair[0], closest_pair[1])[0])
+    if start_loc is not None:
+        closest_pair = []
+        min_dist = float('Inf')
+        for end in Building.get(classes[0].building).entrances():
+            dist = Location.dist(start_loc, end)
+            if min_dist > dist:
+                min_dist = dist
+                closest_pair = [start_loc, end]
+        optimal_path.append(get_best_path(get_graph(), closest_pair[0], closest_pair[1])[0])
 
     # Get the optimal path from one class to the class immediately after
     # Checks multiple entrances for X class to find most optimal route
