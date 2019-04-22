@@ -3,6 +3,7 @@ from python_src.db_connection import *
 from python_src.path_finding import get_best_path
 import datetime
 import math
+from python_src.viz import *
 
 
 
@@ -167,6 +168,11 @@ def sort_unavailable(daily_unavailable):
 
 
 def map_building_to_study_time(weekly_schedule, study_times):
+    """
+    :param weekly_schedule: Weekly schedule of classes
+    :param study_times: Weekly study times
+    :return: Building user will study at
+    """
   #  print(weekly_schedule)
    # print(study_times)
     study_locations = [[], [], [], [], []]
@@ -195,6 +201,11 @@ def map_building_to_study_time(weekly_schedule, study_times):
 
 
 def bisect_path(start_building, end_building):
+    """
+    :param start_building: Building user is starting at
+    :param end_building: Building user is ending up at
+    :return: Building user will study at
+    """
     start_locations = start_building.entrances()
     end_locations = end_building.entrances()
     graph = get_graph()
@@ -220,19 +231,24 @@ def bisect_path(start_building, end_building):
     for i in range(len(all_study_spots)):
         entrances = all_study_spots[i].entrances()
         for k in range(len(entrances)):
-         #   print(entrances[k])
+            print(entrances[k])
             map2 = get_graph()
             temp_path = get_best_path(map2, middle_location, entrances[k])
             if temp_path[1] < min_path_weight:
                 best_path = temp_path[0]
                 min_path_weight = temp_path[1]
-
+    visualize_map(path=best_path)
   #  print(best_path)
     return Building.get(best_path[len(best_path)-1].building)
 
 
 
 def find_study_spot_on_path(start_building, end_building):
+    """
+    :param start_building: BUilding user starts at
+    :param end_building: Building user ends up at
+    :return: BUilding user will study at
+    """
     start_locations = start_building.entrances()
     end_locations = end_building.entrances()
     graph = get_graph()
@@ -247,6 +263,11 @@ def find_study_spot_on_path(start_building, end_building):
     return False, ''
 
 def find_classroom_before_after(daily_schedule, single_study_time):
+    """
+    :param daily_schedule: Daily schedule of classes
+    :param single_study_time: Individual study time
+    :return: THe class before and after study time
+    """
     all_buildings = Building.query.all()
     """If the user has no classes, they are placed in the JC"""
     #print(daily_schedule)
@@ -276,6 +297,11 @@ def find_classroom_before_after(daily_schedule, single_study_time):
 
 
 def find_closest_value(value, _list):
+    """
+    :param value: Checker value
+    :param _list: List of close values
+    :return: CLosest value index
+    """
     closest_distance = math.inf
     index = -1
     for i in range(len(_list)):
@@ -283,7 +309,3 @@ def find_closest_value(value, _list):
             closest_distance = abs(value - _list[i])
             index = i
     return index
-
-
-build_schedule("cguerra5@masonlive.gmu.edu", "spring", '2018')
-
