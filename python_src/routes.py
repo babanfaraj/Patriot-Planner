@@ -1,5 +1,6 @@
 from python_src import app
 from python_src.models import Student, Building
+from python_src.path_finding import find_optimal_class_path, path_to_gmaps_link
 from flask import render_template, flash, redirect, url_for
 from python_src.forms import PasswordChange,DeleteAccount, ResetAccount
 from python_src.models import Student
@@ -17,7 +18,11 @@ from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
 from flask import Flask, request
 
+<<<<<<< HEAD
 # app = Flask(__name__)
+=======
+
+>>>>>>> 8e15d1013bb2f64a923a78a7e59e37a24c74348a
 app.config['SECRET_KEY'] = 'asdf'
 Bootstrap(app)
 login_manager = LoginManager()
@@ -58,10 +63,19 @@ def login():
 @app.route('/home', methods=['GET'])
 @login_required
 def home():
+    current_weekly_schedule = current_user.todays_schedule()
+    paths = find_optimal_class_path(None, current_weekly_schedule)
+    paths.insert(0, [])
+    print(paths)
+    links = [[] if i == 0 else path_to_gmaps_link(p) for i, p in enumerate(paths)]
+    print(paths)
+    print(len(paths))
+    print(current_weekly_schedule)
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
     print(all_building_names)
-    return render_template("home.html", all_building_names=all_building_names)
+    return render_template("home.html", current_weekly_schedule=zip(current_weekly_schedule, links),
+                           all_building_names=all_building_names)
 
 @app.route('/home')
 def about():

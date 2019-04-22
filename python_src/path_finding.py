@@ -1,8 +1,10 @@
+import webbrowser
+import heapq
+
 from python_src.models import Location, Building
 from python_src.db_connection import get_graph
 from python_src.db_connection import *
 from python_src.viz import visualize_map
-import webbrowser
 
 def display_path(url):
     webbrowser.open_new_tab(url)
@@ -17,7 +19,6 @@ def find_optimal_class_path(start_loc, classes):
         return []
 
     # Gets the graph of gmu with location nodes and edges weighted by distance
-    map = get_graph()
 
     # Checks multiple entrances for the first class to find most optimal route
     least_distance = 9999999
@@ -25,26 +26,28 @@ def find_optimal_class_path(start_loc, classes):
     current_best_path = None
     #print("First Class: ", classes[0])
     # building_entrances = Building.get(classes[0].building).entrances()
-    for current_end_location in  Building.get(classes[0].building).entrances():
-        current_best_path = get_best_path(map, start, current_end_location)
-        if current_best_path[1] < least_distance:
-            least_distance = current_best_path[1]
-    optimal_path.append(current_best_path[0])
+    if start_loc is not None:
+        closest_pair = []
+        min_dist = float('Inf')
+        for end in Building.get(classes[0].building).entrances():
+            dist = Location.dist(start_loc, end)
+            if min_dist > dist:
+                min_dist = dist
+                closest_pair = [start_loc, end]
+        optimal_path.append(get_best_path(get_graph(), closest_pair[0], closest_pair[1])[0])
 
     # Get the optimal path from one class to the class immediately after
     # Checks multiple entrances for X class to find most optimal route
     for i in range(1, len(classes)):
-        least_distance = 99999999
-        current_optimal_path = None
-        # Iterate through all entrances
-        for current_start_location in Building.get(classes[i-1].building).entrances():
-            for current_end_location in Building.get(classes[i].building).entrances():
-                map = get_graph()
-                current_best_path = get_best_path(map, current_start_location, current_end_location)
-                if current_best_path[1] < least_distance:
-                    least_distance = current_best_path[1]
-                    current_optimal_path = current_best_path
-        print(current_optimal_path)
+        closest_pair = []
+        min_dist = float('Inf')
+        for start in Building.get(classes[i - 1].building).entrances():
+            for end in Building.get(classes[i].building).entrances():
+                dist = Location.dist(start, end)
+                if min_dist > dist:
+                    min_dist = dist
+                    closest_pair = [start, end]
+        current_optimal_path = get_best_path(get_graph(), closest_pair[0], closest_pair[1])
         optimal_path.append(current_optimal_path[0])
     return optimal_path
 
@@ -131,7 +134,6 @@ if __name__ == '__main__':
     webbrowser.open_new_tab(url)
 
     for path in optimal_class_path:
-        pass
-        #visualize_map(path=path)
-        #display_path(path_to_gmaps_link(path))
+        visualize_map(path=path)
+        display_path(path_to_gmaps_link(path))
 

@@ -25,7 +25,7 @@ class Student(db.Model, UserMixin):
 
         day = today.weekday()
         if day in [5, 6]:
-            return []
+            return self.get_weekly_schedule(year, semester)[0]
         return self.get_weekly_schedule(year, semester)[day]
 
     def current_weekly_schedule(self):
@@ -395,6 +395,13 @@ class MealTime(db.Model):
         return rep.format(self.student_email, self.daily_meal_num,
                           self.min_meal_hours, self.max_meal_hours,
                           self.earliest_time, self.latest_time)
+
+
+class StudyInfo:
+    def __init__(self, start_time, end_time, building):
+        self.start_time = start_time
+        self.end_time = end_time
+        self.building = building
 
 
 if __name__ == '__main__':
