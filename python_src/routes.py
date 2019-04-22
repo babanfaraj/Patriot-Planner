@@ -1,6 +1,6 @@
 from python_src import app
 from flask import render_template, flash, redirect, url_for
-from python_src.forms import PasswordChange,DeleteAccount
+from python_src.forms import PasswordChange,DeleteAccount, ResetAccount
 from python_src.models import Student
 from python_src import db_connection as db_conn
 from flask import render_template, redirect, url_for
@@ -67,14 +67,16 @@ def edit_schedule():
 def settings():
     form = PasswordChange()
     delete_account_form = DeleteAccount()
-    if form.validate_on_submit():
-        # Iterate through database until current user is reached
-        # Change users password
+    reset_account_form = ResetAccount()
+
+    if form.submit.data and form.validate_on_submit():
         current_user.update_password(form.new_password.data)
         flash('Password Changed', 'success')
-    if delete_account_form.validate_on_submit():
+    if delete_account_form.delete_account_confirmation.data == 'delete':
         print("DELETING ACCOUNT")
-    return render_template("settings.html", form=form, title="password_change", delete_account_form=delete_account_form)
+    if reset_account_form.reset_account_confirmation.data == 'reset':
+        print("Reset ACCOUNT")
+    return render_template("settings.html",  form=form, title="password_change", delete_account_form=delete_account_form, reset_account_form=reset_account_form)
 
 
 @app.route('/logout')

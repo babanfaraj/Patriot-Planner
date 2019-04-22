@@ -104,28 +104,56 @@
                             {{ form.submit(class="btn btn-outline-info") }}
                         </div>
                     </form>
-                    <center><h3>Delete Account</h3></center>
-                    <p class="text-center">Use the textbox below to confirm you would like to delete your account.</p>
-                    <form method="POST" action="">
-                        <div class="form-group">
+                    <fieldset class="form-group">
+                        <center><h3>Reset Account</h3></center>
+                        <p class="text-center">Please type 'reset' without quotes to delete your account.</p>
+                        <form method="POST" action="">
+                            <div class="form-group">
+                                {{reset_account_form.reset_account_confirmation.label(class="form-control-label")}}
+                                {% if reset_account_form.reset_account_confirmation.errors %}
+                                {{reset_account_form.reset_account_confirmation(class="form-control form-control-lg
+                                is-invalid")}}
+                                <div class="invalid-feedback">
+                                    {% for errors in reset_account_form.reset_account_confirmation.errors %}
+                                    <span>{{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                {{reset_account_form.reset_account_confirmation(class="form-control
+                                form-reset_account_form-lg")}}
+                                {% endif %}
+
+                            </div>
+                            <div class="form-group">
+                                {{ reset_account_form.reset_btn(class="btn btn-outline-info") }}
+                            </div>
+                        </form>
+                    </fieldset>
+                    <fieldset class="form-group">
+                        <center><h3>Delete Account</h3></center>
+                        <p class="text-center">Please type 'delete' without quotes to delete your account.</p>
+                        <form method="POST" action="">
+                            <div class="form-group">
                                 {{delete_account_form.delete_account_confirmation.label(class="form-control-label")}}
                                 {% if delete_account_form.delete_account_confirmation.errors %}
-                                {{delete_account_form.delete_account_confirmation(class="form-control form-control-lg is-invalid")}}
+                                {{delete_account_form.delete_account_confirmation(class="form-control form-control-lg
+                                is-invalid")}}
                                 <div class="invalid-feedback">
                                     {% for errors in delete_account_form.delete_account_confirmation.errors %}
                                     <span>{{ error }}</span>
                                     {% endfor %}
                                 </div>
                                 {% else %}
-                                {{delete_account_form.delete_account_confirmation(class="form-control form-control-lg")}}
+                                {{delete_account_form.delete_account_confirmation(class="form-control
+                                form-control-lg")}}
                                 {% endif %}
 
                             </div>
-                         <div class="form-group">
+                            <div class="form-group">
                                 {{ delete_account_form.delete_btn(class="btn btn-outline-info") }}
-                         </div>
-                    </form>
-
+                            </div>
+                        </form>
+                    </fieldset>
                 </div>
             </div><!--/col-sm-6-->
         </div><!--/row-->

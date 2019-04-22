@@ -15,5 +15,10 @@ class PasswordChange(FlaskForm):
 
 
 class DeleteAccount (FlaskForm):
-    delete_account_confirmation=StringField('Delete Account Confirmation', validators=[DataRequired()])
+    delete_account_confirmation=StringField('Delete Account Confirmation',validators=[DataRequired()])
     delete_btn = SubmitField('Delete Account')
+
+
+class ResetAccount (FlaskForm):
+    reset_account_confirmation = StringField('Reset Account Confirmation', validators=[DataRequired()])
+    reset_btn = SubmitField('Reset Account')
