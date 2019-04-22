@@ -8,14 +8,13 @@ function createRow() {
   var cell3 = rownew.insertCell(2);
   var cell4 = rownew.insertCell(3);
   var cell5 = rownew.insertCell(4);
-  var cell6 = rownew.insertCell(5);
 
-  cell1.innerHTML = "#";
+/*  cell1.innerHTML = "#";
   cell2.innerHTML = "NAME";
   cell3.innerHTML = "LOCATION";
   cell4.innerHTML = "START";
   cell5.innerHTML = "END";
-  cell6.innerHTML = "DAYS";
+  cell6.innerHTML = "DAYS";*/
 }
 
 function saveSchedule() {
