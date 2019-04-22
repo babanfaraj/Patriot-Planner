@@ -1,3 +1,11 @@
+.form-time {
+    display:none !important;
+    control-label: "" !important;
+}
+
+.control-label {
+    display:none !important;
+}
 
 
 

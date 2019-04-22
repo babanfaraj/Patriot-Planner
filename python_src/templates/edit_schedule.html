@@ -10,6 +10,7 @@
     <title>Edit Schedule - PatriotPlanner</title>
 </head>
 <body>
+{% import "bootstrap/wtf.html" as wtf %}
 <div class="container">
     <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #006940;">
         <a class="nav-link" href="/home">
@@ -52,19 +53,17 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th id="col1" scope="col">#</th>
-            <th id="col2" scope="col">Class/Break Name</th>
-            <th id="col3" scope="col">Location</th>
-            <th id="col4" scope="col">Start Time</th>
-            <th id="col5" scope="col">End Time</th>
-            <th id="col6" scope="col">Day(s)</th>
+            <th id="col1" scope="col">Class Name</th>
+            <th id="col2" scope="col">Location</th>
+            <th id="col3" scope="col">Start Time</th>
+            <th id="col4" scope="col">End Time</th>
+            <th id="col5" scope="col">Day(s)</th>
         </tr>
         </thead>
         <tbody id="scheduleInput">
         <tr id="block1">
-            <th id="row1" scope="row">1</th>
             <td id="event-name1">
-                <input type="text" placeholder="Class/Break Name" aria-label="event-name"
+                <input type="text" placeholder="Class Name" aria-label="event-name"
                        class="form-control">
             </td>
             <td id="location1">
@@ -76,17 +75,25 @@
                     {% endfor %}
                 </select>
             </td>
-            <td id="start-time1"><input type="text" placeholder="Start Time" aria-label="start-time">
-            <td id="end-time1">
-                <input type="text" placeholder="End Time" aria-label="end-time"
-                       class=".col-sm-form-control">
+            <td id="start-time1">
+                 <input type="time" placeholder="Start Time" aria-label="start-time">
+                <!--               <form class="form-time" method="POST" action="/edit_schedule">
+                                   {{ form.hidden_tag() }}
+                                   {{ wtf.form_field(form.start_time) }}
+                               </form>-->
 
-            </td>
+            <td id="end-time1">
+                    <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
+
+                <!--
+                <form class="form-time" method="POST" action="/edit_schedule">
+                {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.end_time) }}
+                </form>-->
+        </td>
             <td id="checkboxes1">
                 <div class="form-check">
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckboxSu1" value="0">
-                        <label class="form-check-label" for="inlineCheckboxSu1">Su</label>
                         &ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxM1" value="1">
                         <label class="form-check-label" for="inlineCheckboxM1">M</label>
@@ -103,8 +110,6 @@
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxF1" value="5">
                         <label class="form-check-label" for="inlineCheckboxF1">F</label>
                         &ensp;
-                        <input class="form-check-input" type="checkbox" id="inlineCheckboxSa1" value="6">
-                        <label class="form-check-label" for="inlineCheckboxSa1">Sa</label>
                     </div>
                 </div>
 
@@ -112,9 +117,8 @@
         </tr>
 
         <tr id="block2">
-            <th id="row2" scope="row">2</th>
             <td id="event-name2">
-                <input type="text" placeholder="Class/Break Name" aria-label="event-name"
+                <input type="text" placeholder="Class Name" aria-label="event-name"
                        class="form-control">
             </td>
             <td id="location2">
@@ -133,10 +137,7 @@
             </td>
             <td id="checkboxes2">
                 <div class="form-check">
-                    <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="inlineCheckboxSu2" value="0">
-                        <label class="form-check-label" for="inlineCheckboxSu">Su</label>
-                        &ensp;
+                    <div class="form-check form-check-inline">&ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxM2" value="1">
                         <label class="form-check-label" for="inlineCheckboxM">M</label>
                         &ensp;
@@ -151,9 +152,6 @@
                         &ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxF2" value="5">
                         <label class="form-check-label" for="inlineCheckboxF">F</label>
-                        &ensp;
-                        <input class="form-check-input" type="checkbox" id="inlineCheckboxSa2" value="6">
-                        <label class="form-check-label" for="inlineCheckboxSa">Sa</label>
                     </div>
                 </div>
 
