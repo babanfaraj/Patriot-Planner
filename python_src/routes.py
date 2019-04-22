@@ -15,8 +15,11 @@ from flask_login import LoginManager, login_user, login_required,\
     logout_user, current_user
 from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
+<<<<<<< HEAD
 from wtforms_components import TimeField
 from flask import Flask, request
+=======
+>>>>>>> 94b64b0313cd9f9cc4cdb70943770dbd1fc70f6b
 
 <<<<<<< HEAD
 # app = Flask(__name__)
