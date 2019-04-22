@@ -28,6 +28,19 @@ class Student(db.Model, UserMixin):
             return []
         return self.get_weekly_schedule(year, semester)[day]
 
+    def current_weekly_schedule(self):
+        today = datetime.today()
+        year = str(today.year)
+
+        if today.month in [1, 2, 3, 4, 5]:
+            semester = 'spring'
+        elif today.month in [8, 9, 10, 11, 12]:
+            semester = 'fall'
+        else:
+            semester = 'summer'
+
+        return self.get_weekly_schedule(year, semester)
+
     def get_weekly_schedule(self, year, semester):
         """Gets the weekly
         :param year: The year of the class as a string.
