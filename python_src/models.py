@@ -54,6 +54,11 @@ class Student(db.Model, UserMixin):
         self.password = new_password
         db.session.commit()
 
+    def delete_account(self):
+        self.reset_account()
+        Student.query.filter_by(email=self.email).delete()
+        db.session.commmit()
+
     def delete_class(self, year, semester, class_name):
         ClassTime.query.filter_by(
             student_email=self.email, year=year, semester=semester,

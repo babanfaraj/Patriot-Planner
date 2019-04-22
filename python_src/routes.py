@@ -73,8 +73,10 @@ def settings():
         current_user.update_password(form.new_password.data)
         flash('Password Changed', 'success')
     if delete_account_form.delete_account_confirmation.data == 'delete':
+        current_user.delete_account()
         print("DELETING ACCOUNT")
     if reset_account_form.reset_account_confirmation.data == 'reset':
+        current_user.reset_account()
         print("Reset ACCOUNT")
     return render_template("settings.html",  form=form, title="password_change", delete_account_form=delete_account_form, reset_account_form=reset_account_form)
 
