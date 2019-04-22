@@ -362,6 +362,13 @@ class MealTime(db.Model):
                           self.earliest_time, self.latest_time)
 
 
+class StudyInfo:
+    def __init__(self, start_time, end_time, building):
+        self.start_time = start_time
+        self.end_time = end_time
+        self.building = building
+
+
 if __name__ == '__main__':
     carlos = Student.get('cguerra5@masonlive.gmu.edu')
     for d in carlos.get_weekly_schedule(year='2018', semester='spring'):

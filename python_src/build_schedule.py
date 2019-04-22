@@ -4,27 +4,21 @@ from python_src.path_finding import get_best_path
 import datetime
 import math
 
-"""
-Returns all the study times for a given week
-First dimension of array indicates the day of the week
-Second dimension indicates study block in a given day
-"""
 
 
 def build_schedule(email, semester, year):
+    """
+    Returns all the study times for a given week
+    Maps study time to a nearby building that is along the path
+    """
+
     cur_student = Student.get(email)
-    #weekly_schedule = [[], [], [], [], []]
+
     if cur_student is None:
       print('No associated email')
       return 'No associated email'
 
     weekly_schedule = cur_student.get_weekly_schedule(year, semester)
-   # print(weekly_schedule)
- #   student_classes = cur_student.all_classes()
-    #filter_by_semester(student_classes, semester, year)
-    #set_classes(weekly_schedule, student_classes)
-
- #   print(cur_student.study_preference())
 
     hours_left = cur_student.study_preference().weekly_hours
     min_cont_hours = cur_student.study_preference().min_cont_hours
@@ -34,8 +28,6 @@ def build_schedule(email, semester, year):
     latest_datetime = cur_student.study_preference().latest_time
     earliest_time = earliest_datetime.hour + earliest_datetime.minute/60.0
     latest_time = latest_datetime.hour + latest_datetime.minute/60.0
-    earliest_time = 9.5
-   #git  print(weekly_schedule)
     unavailable_times = find_unavailable_times(weekly_schedule, earliest_time, latest_time)
 
 #    print(unavailable_times)
@@ -77,12 +69,22 @@ def build_schedule(email, semester, year):
         study_times_datetime[day_num].append((start_time, end_time))
       day_num+=1
 
-    map_building_to_study_time(weekly_schedule, study_times)
- #   print(study_times_datetime)
-    return study_times_datetime
+    selected_buildings = map_building_to_study_time(weekly_schedule, study_times)
+
+    study_time_and_buildings = [[], [], [], [], []]
+    for i in range(len(study_times)):
+        for k in range(len(study_times[i])):
+            study_time_and_buildings[i].append(StudyInfo(study_times_datetime[i][k][0], study_times_datetime[i][k][1], selected_buildings[i][k]))
+ #   print(study_time_and_buildings)
+    return study_time_and_buildings
 
 #Finds an individual study time
 def find_study_time(daily_available, study_length):
+    """
+    :param daily_available: All available slots in a day
+    :param study_length: Length of study session
+    :return: Individual study session
+    """
     possible_time = []
     for available_time in daily_available:
       possible_time.append((available_time[0], available_time[0] + study_length))
@@ -93,8 +95,13 @@ def find_study_time(daily_available, study_length):
 
 
 
-#Finds all available times in a day
 def find_available_times(daily_unavailable, ideal_hours, break_time_hours):
+    """
+    :param daily_unavailable: All unavailable times in a day
+    :param ideal_hours: Length of study session
+    :param break_time_hours: Length of break between study sessions and classes
+    :return: All available times in a day
+    """
     daily_available = []
     # Corrects for break_time_hours adjustment that happens in code below. No need for break time between start and end of day
     daily_unavailable[0] = (0, daily_unavailable[0][1] - break_time_hours)
@@ -109,6 +116,10 @@ def find_available_times(daily_unavailable, ideal_hours, break_time_hours):
     return daily_available
 
 def remove_overlapping_unavailable(unavailable_times):
+    """
+    :param unavailable_times: All unavailable times in a day
+    :return: unavailable_times with overlapping unavailables removed
+    """
     i = 0
     k = 0
     while i < len(unavailable_times):
@@ -122,8 +133,13 @@ def remove_overlapping_unavailable(unavailable_times):
 
 
 
-#finds all unavailable times in a week
 def find_unavailable_times(weekly_schedule, earliest_time, latest_time):
+    """
+    :param weekly_schedule: Weekly schedule of classes
+    :param earliest_time: Earliest time willing to have a study session
+    :param latest_time: Latest time willing to have a study session
+    :return: All unavailable times in a week
+    """
     unavailable_times = [[], [], [], [], []]
     i = 0
     for day in weekly_schedule:
@@ -139,37 +155,12 @@ def find_unavailable_times(weekly_schedule, earliest_time, latest_time):
     return unavailable_times
 
 
-#Key for sorting class time (Remove soon)
-def sort_key(class_time):
-    return class_time.start_time
-
-#Sorts uavailable times
 def sort_unavailable(daily_unavailable):
-   return daily_unavailable[0]
-
-
-#Removes all classes that are not curently being taken
-def filter_by_semester(student_classes, semester, year):
-    i = 0
-    while i < len(student_classes):
-      if student_classes[i].year != year or student_classes[i].semester != semester:
-        del student_classes[i]
-      else:
-        i += 1
-
-#Assign classes to days of the week
-def set_classes(weekly_schedule, student_classes):
-    for _class in student_classes:
-      if "M" in _class.week_days:
-        weekly_schedule[0].append(_class)
-      if "T" in _class.week_days:
-        weekly_schedule[1].append(_class)
-      if "W" in _class.week_days:
-        weekly_schedule[2].append(_class)
-      if "R" in _class.week_days:
-        weekly_schedule[3].append(_class)
-      if "F" in _class.week_days:
-        weekly_schedule[4].append(_class)
+    """
+    :param daily_unavailable: All unavailable times in a day
+    :return: Sorted unavailable times
+    """
+    return daily_unavailable[0]
 
 
 def map_building_to_study_time(weekly_schedule, study_times):
@@ -194,10 +185,10 @@ def map_building_to_study_time(weekly_schedule, study_times):
                 if spot_on_path[0]:
                     study_locations[i].append(spot_on_path[1])
                 else:
-                    bisect_path(start_end_buildings[i][k][0], start_end_buildings[i][k][1])
+                    study_locations[i].append(bisect_path(start_end_buildings[i][k][0], start_end_buildings[i][k][1]))
 
-    print(study_locations)
-    return 0
+ #   print(study_locations)
+    return start_end_buildings
 
 
 def bisect_path(start_building, end_building):
@@ -211,13 +202,29 @@ def bisect_path(start_building, end_building):
             temp_path = get_best_path(graph, start_locations[i], end_locations[k])
             if temp_path[1] < min_path_weight:
                 best_path = temp_path[0]
+                min_path_weight = temp_path[1]
 
     middle_location = best_path[round(len(best_path)/2)]
 
     all_buildings = Building.query.all()
-    for building in all_buildings
+    all_study_spots = []
+    for building in all_buildings:
+        if building.is_study_location:
+            all_study_spots.append(building)
 
-    print(middle_location)
+    min_path_weight = math.inf
+    for i in range(len(all_study_spots)):
+        entrances = all_study_spots[i].entrances()
+        for k in range(len(entrances)):
+         #   print(entrances[k])
+            map2 = get_graph()
+            temp_path = get_best_path(map2, middle_location, entrances[k])
+            if temp_path[1] < min_path_weight:
+                best_path = temp_path[0]
+                min_path_weight = temp_path[1]
+
+  #  print(best_path)
+    return Building.get(best_path[len(best_path)-1].building)
 
 
 
@@ -231,7 +238,7 @@ def find_study_spot_on_path(start_building, end_building):
             for l in range(len(path)):
                 loc_building = Building.get(path[0][i].building)
                 if loc_building and loc_building.is_study_location:
-                    print(loc_building)
+                    #print(loc_building)
                     return True, loc_building
     return False, ''
 
@@ -272,4 +279,7 @@ def find_closest_value(value, _list):
             closest_distance = abs(value - _list[i])
             index = i
     return index
+
+
 build_schedule("cguerra5@masonlive.gmu.edu", "spring", '2018')
+
