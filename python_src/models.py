@@ -25,7 +25,7 @@ class Student(db.Model, UserMixin):
 
         day = today.weekday()
         if day in [5, 6]:
-            return []
+            return self.get_weekly_schedule(year, semester)[0]
         return self.get_weekly_schedule(year, semester)[day]
 
     def current_weekly_schedule(self):
