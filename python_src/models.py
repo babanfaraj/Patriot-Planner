@@ -1,5 +1,6 @@
 import geopy.distance
 
+from datetime import datetime
 from python_src import db
 from flask_login import UserMixin
 
@@ -10,6 +11,35 @@ class Student(db.Model, UserMixin):
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(25), nullable=False)
+
+    def todays_schedule(self):
+        today = datetime.today()
+        year = str(today.year)
+
+        if today.month in [1, 2, 3, 4, 5]:
+            semester = 'spring'
+        elif today.month in [8, 9, 10, 11, 12]:
+            semester = 'fall'
+        else:
+            semester = 'summer'
+
+        day = today.weekday()
+        if day in [5, 6]:
+            return []
+        return self.get_weekly_schedule(year, semester)[day]
+
+    def current_weekly_schedule(self):
+        today = datetime.today()
+        year = str(today.year)
+
+        if today.month in [1, 2, 3, 4, 5]:
+            semester = 'spring'
+        elif today.month in [8, 9, 10, 11, 12]:
+            semester = 'fall'
+        else:
+            semester = 'summer'
+
+        return self.get_weekly_schedule(year, semester)
 
     def get_weekly_schedule(self, year, semester):
         """Gets the weekly
@@ -53,6 +83,11 @@ class Student(db.Model, UserMixin):
     def update_password(self, new_password):
         self.password = new_password
         db.session.commit()
+
+    def delete_account(self):
+        self.reset_account()
+        Student.query.filter_by(email=self.email).delete()
+        db.session.commmit()
 
     def delete_class(self, year, semester, class_name):
         ClassTime.query.filter_by(
@@ -362,16 +397,23 @@ class MealTime(db.Model):
                           self.earliest_time, self.latest_time)
 
 
+class StudyInfo:
+    def __init__(self, start_time, end_time, building):
+        self.start_time = start_time
+        self.end_time = end_time
+        self.building = building
+
+
 if __name__ == '__main__':
     carlos = Student.get('cguerra5@masonlive.gmu.edu')
     for d in carlos.get_weekly_schedule(year='2018', semester='spring'):
         print(d)
     carlos.update_password('new_password')
     if ClassTime.get(student_email=carlos.email, class_name='CS333',
-                     year='2017', semester='Spring') is None:
-        carlos.add_class(class_name='CS333', year='2017', semester='Spring',
+                     year='2019', semester='Spring') is None:
+        carlos.add_class(class_name='CS333', year='2019', semester='Spring',
                          start_time='09:00:00', end_time='10:15:00',
                          building='Merten Hall', week_days='MWF')
-    else:
-        carlos.delete_class(year='2017', semester='Spring', class_name='CS333')
+
+    print(carlos.todays_schedule())
 

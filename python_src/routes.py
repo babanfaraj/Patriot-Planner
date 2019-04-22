@@ -1,5 +1,8 @@
 from python_src import app
 from python_src.models import Student, Building
+from flask import render_template, flash, redirect, url_for
+from python_src.forms import PasswordChange,DeleteAccount, ResetAccount
+from python_src.models import Student
 from python_src import db_connection as db_conn
 from python_src.forms import PasswordChange
 from flask import render_template, redirect, url_for
@@ -7,7 +10,7 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_user, login_required,\
     logout_user, current_user
-from wtforms import StringField, BooleanField
+from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
 
@@ -82,11 +85,24 @@ def edit_schedule():
     tf = TimeForm()
     return render_template("edit_schedule.html", form=tf, all_building_names=all_building_names)
 
+
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
     form = PasswordChange()
-    return render_template("settings.html", title='Settings', form=form)
+    delete_account_form = DeleteAccount()
+    reset_account_form = ResetAccount()
+
+    if form.submit.data and form.validate_on_submit():
+        current_user.update_password(form.new_password.data)
+        flash('Password Changed', 'success')
+    if delete_account_form.delete_account_confirmation.data == 'delete':
+        current_user.delete_account()
+        print("DELETING ACCOUNT")
+    if reset_account_form.reset_account_confirmation.data == 'reset':
+        current_user.reset_account()
+        print("Reset ACCOUNT")
+    return render_template("settings.html",  form=form, title="password_change", delete_account_form=delete_account_form, reset_account_form=reset_account_form)
 
 
 @app.route('/logout')
