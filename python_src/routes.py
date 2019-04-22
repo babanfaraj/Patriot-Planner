@@ -7,7 +7,7 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_user, login_required,\
     logout_user, current_user
-from wtforms import StringField, BooleanField
+from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
 
