@@ -76,6 +76,9 @@ def build_schedule(email, semester, year):
         for k in range(len(study_times[i])):
             study_time_and_buildings[i].append(StudyInfo(study_times_datetime[i][k][0], study_times_datetime[i][k][1], selected_buildings[i][k]))
  #   print(study_time_and_buildings)
+    for prtday in study_time_and_buildings:
+        for eachpart in prtday:
+            print(eachpart.start_time, eachpart.end_time, eachpart.building)
     return study_time_and_buildings
 
 #Finds an individual study time
@@ -188,7 +191,7 @@ def map_building_to_study_time(weekly_schedule, study_times):
                     study_locations[i].append(bisect_path(start_end_buildings[i][k][0], start_end_buildings[i][k][1]))
 
  #   print(study_locations)
-    return start_end_buildings
+    return study_locations
 
 
 def bisect_path(start_building, end_building):
@@ -211,6 +214,7 @@ def bisect_path(start_building, end_building):
     for building in all_buildings:
         if building.is_study_location:
             all_study_spots.append(building)
+            break
 
     min_path_weight = math.inf
     for i in range(len(all_study_spots)):
