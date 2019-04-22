@@ -130,7 +130,8 @@ if __name__ == '__main__':
     url = "http://www.google.com/"
     webbrowser.open_new_tab(url)
 
-    #for path in optimal_class_path:
+    for path in optimal_class_path:
+        pass
         #visualize_map(path=path)
         #display_path(path_to_gmaps_link(path))
 

@@ -1,6 +1,7 @@
 from python_src import app
-from python_src.models import Student
+from python_src.models import Student, Building
 from python_src import db_connection as db_conn
+from python_src.forms import PasswordChange
 from flask import render_template, redirect, url_for
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
@@ -8,6 +9,8 @@ from flask_login import LoginManager, login_user, login_required,\
     logout_user, current_user
 from wtforms import StringField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
+from wtforms_components import TimeField
+
 
 
 app.config['SECRET_KEY'] = 'asdf'
@@ -28,6 +31,11 @@ class LoginForm(FlaskForm):
     remember = BooleanField('remember me')
 
 
+class TimeForm(FlaskForm):
+    start_time = TimeField('time', validators=[InputRequired()])
+    end_time = TimeField('time', validators=[InputRequired()])
+
+
 @app.route('/login', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 def login():
@@ -42,28 +50,41 @@ def login():
 
 
 @app.route('/')
-@app.route('/home')
+@app.route('/home', methods=['GET'])
 @login_required
 def home():
+    all_buildings = Building.query.all()
+    all_building_names = [_.building_name for _ in all_buildings]
+    print(all_building_names)
+    return render_template("home.html", all_building_names=all_building_names)
+
+@app.route('/home')
+def about():
     return render_template("home.html")
 
-
-@app.route('/new_route')
+@app.route('/new_route', methods=['GET'])
 @login_required
 def new_route():
-    return render_template("new_route.html")
+    all_buildings = Building.query.all()
+    all_building_names = [_.building_name for _ in all_buildings]
+    print(all_building_names)
+    return render_template("new_route.html", all_building_names=all_building_names)
 
 
-@app.route('/edit_schedule')
+@app.route('/edit_schedule', methods=['GET'])
 @login_required
 def edit_schedule():
-    return render_template("edit_schedule.html")
+    all_buildings = Building.query.all()
+    all_building_names = [_.building_name for _ in all_buildings]
+    print(all_building_names)
+    tf = TimeForm()
+    return render_template("edit_schedule.html", form=tf, all_building_names=all_building_names)
 
-
-@app.route('/settings')
+@app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    return render_template("settings.html")
+    form = PasswordChange()
+    return render_template("settings.html", title='Settings', form=form)
 
 
 @app.route('/logout')
