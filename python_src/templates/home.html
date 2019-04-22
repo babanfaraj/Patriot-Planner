@@ -66,30 +66,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr id="event1">
-            <td>C1</td>
-            <td>L1</td>
-            <td>T1</td>
-            <td>R1</td>
+        {% for i, c in enumerate(current_weekly_schedule) %}
+        <tr id="event{{i}}">
+            <td>{{c.class_name}}</td>
+            <td>{{c.location}}</td>
+            <td>{{c.start_time}}</td>
+            <td>{{c.end_time}}</td>
         </tr>
-        <tr id="event2">
-            <td>C2</td>
-            <td>L2</td>
-            <td>T2</td>
-            <td>R2</td>
-        </tr>
-        <tr id="event3">
-            <td>C3</td>
-            <td>L3</td>
-            <td>T3</td>
-            <td>R3</td>
-        </tr>
-        <tr id="event4">
-            <td>C4</td>
-            <td>L4</td>
-            <td>T4</td>
-            <td>R4</td>
-        </tr>
+        {% endfor %}
+
         </tbody>
     </table>
 </div>

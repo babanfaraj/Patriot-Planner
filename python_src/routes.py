@@ -53,10 +53,12 @@ def login():
 @app.route('/home', methods=['GET'])
 @login_required
 def home():
+    current_weekly_schedule = current_user.current_weekly_schedule()
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
     print(all_building_names)
-    return render_template("home.html", all_building_names=all_building_names)
+    return render_template("home.html", current_weekly_schedule=current_weekly_schedule,
+                           all_building_names=all_building_names)
 
 @app.route('/home')
 def about():
