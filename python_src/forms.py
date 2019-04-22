@@ -30,3 +30,19 @@ class PasswordChange(FlaskForm):
     confirm_new_password = PasswordField('Confirm New Password',
                                          validators=[DataRequired(), EqualTo('new_password')])
     submit = SubmitField('Change Password')
+
+class PasswordChange(FlaskForm):
+    new_password = PasswordField('New Password', validators=[DataRequired()])
+    confirm_new_password = PasswordField('Confirm New Password',
+                                         validators=[DataRequired(), EqualTo('new_password')])
+    submit = SubmitField('Change Password')
+
+
+class DeleteAccount (FlaskForm):
+    delete_account_confirmation=StringField('Delete Account Confirmation',validators=[DataRequired()])
+    delete_btn = SubmitField('Delete Account')
+
+
+class ResetAccount (FlaskForm):
+    reset_account_confirmation = StringField('Reset Account Confirmation', validators=[DataRequired()])
+    reset_btn = SubmitField('Reset Account')
