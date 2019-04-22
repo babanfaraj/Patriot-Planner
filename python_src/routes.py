@@ -4,6 +4,8 @@ from flask import render_template, flash, redirect, url_for
 from python_src.forms import PasswordChange,DeleteAccount, ResetAccount
 from python_src.models import Student
 from python_src import db_connection as db_conn
+from python_src.path_finding import get_best_path, path_to_gmaps_link, display_path
+from python_src.db_connection import get_graph
 from python_src.forms import PasswordChange
 from flask import render_template, redirect, url_for
 from flask_wtf import FlaskForm
@@ -13,9 +15,9 @@ from flask_login import LoginManager, login_user, login_required,\
 from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
+from flask import Flask, request
 
-
-
+# app = Flask(__name__)
 app.config['SECRET_KEY'] = 'asdf'
 Bootstrap(app)
 login_manager = LoginManager()
@@ -65,14 +67,33 @@ def home():
 def about():
     return render_template("home.html")
 
-@app.route('/new_route', methods=['GET'])
+
+@app.route('/new_route', methods=['GET', 'POST'])
 @login_required
 def new_route():
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
-    print(all_building_names)
-    return render_template("new_route.html", all_building_names=all_building_names)
+    if request.method == "GET":
+        return render_template("new_route.html", all_building_names=all_building_names)
+    else:
+        start_loc = request.form.get('start_loc')
+        end_loc = request.form.get('end_loc')
+        print("Start Location:", start_loc)
+        print("End Location:", end_loc)
+        start = None
+        end   = None
+        for currentNode in get_graph().keys():
+            if currentNode.building == start_loc:
+                start = currentNode
+                # print("Start: ", start)
+            if currentNode.building == end_loc:
+                end = currentNode
+                #print("End: ", end)
 
+        bestpath = get_best_path(get_graph(), start, end)
+        if bestpath is not None:
+            display_path(path_to_gmaps_link(bestpath))
+        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath), all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
 
 @app.route('/edit_schedule', methods=['GET'])
 @login_required
