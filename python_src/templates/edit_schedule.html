@@ -76,21 +76,21 @@
                 </select>
             </td>
             <td id="start-time1">
-                 <input type="time" placeholder="Start Time" aria-label="start-time">
+                <input type="time" placeholder="Start Time" aria-label="start-time">
                 <!--               <form class="form-time" method="POST" action="/edit_schedule">
                                    {{ form.hidden_tag() }}
                                    {{ wtf.form_field(form.start_time) }}
                                </form>-->
 
             <td id="end-time1">
-                    <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
+                <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
 
                 <!--
                 <form class="form-time" method="POST" action="/edit_schedule">
                 {{ form.hidden_tag() }}
                     {{ wtf.form_field(form.end_time) }}
                 </form>-->
-        </td>
+            </td>
             <td id="checkboxes1">
                 <div class="form-check">
                     <div class="form-check form-check-inline">
@@ -129,29 +129,304 @@
                     <option value="3">Three</option>
                 </select>
             </td>
-            <td id="start-time2"><input type="text" placeholder="Start Time" aria-label="start-time">
+            <td id="start-time2">
+                <input type="time" placeholder="Start Time" aria-label="start-time">
+            </td>
             <td id="end-time2">
-                <input type="text" placeholder="End Time" aria-label="end-time"
-                       class=".col-sm-form-control">
-
+                <input type="time" placeholder="End Time" aria-label="end-time">
             </td>
             <td id="checkboxes2">
                 <div class="form-check">
                     <div class="form-check form-check-inline">&ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxM2" value="1">
-                        <label class="form-check-label" for="inlineCheckboxM">M</label>
+                        <label class="form-check-label" for="inlineCheckboxM2">M</label>
                         &ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxTu2" value="2">
-                        <label class="form-check-label" for="inlineCheckboxTu">Tu</label>
+                        <label class="form-check-label" for="inlineCheckboxTu2">Tu</label>
                         &ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxW2" value="3">
-                        <label class="form-check-label" for="inlineCheckboxW">W</label>
+                        <label class="form-check-label" for="inlineCheckboxW2">W</label>
                         &ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxTh2" value="4">
-                        <label class="form-check-label" for="inlineCheckboxTh">Th</label>
+                        <label class="form-check-label" for="inlineCheckboxTh2">Th</label>
                         &ensp;
                         <input class="form-check-input" type="checkbox" id="inlineCheckboxF2" value="5">
-                        <label class="form-check-label" for="inlineCheckboxF">F</label>
+                        <label class="form-check-label" for="inlineCheckboxF2">F</label>
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+
+        <tr id="block3">
+            <td id="event-name3">
+                <input type="text" placeholder="Class Name" aria-label="event-name"
+                       class="form-control">
+            </td>
+            <td id="location3">
+                <select aria-label="location" class="custom-select" id="inputGroupSelect03">
+                    <option selected>Location</option>
+                    {% for all_building_names in all_building_names %}
+                    <option value="{{all_building_names}}">{{all_building_names}}</option>
+                    "
+                    {% endfor %}
+                </select>
+            </td>
+            <td id="start-time3">
+                <input type="time" placeholder="Start Time" aria-label="start-time">
+                <!--               <form class="form-time" method="POST" action="/edit_schedule">
+                                   {{ form.hidden_tag() }}
+                                   {{ wtf.form_field(form.start_time) }}
+                               </form>-->
+
+            <td id="end-time3">
+                <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
+
+                <!--
+                <form class="form-time" method="POST" action="/edit_schedule">
+                {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.end_time) }}
+                </form>-->
+            </td>
+            <td id="checkboxes3">
+                <div class="form-check">
+                    <div class="form-check form-check-inline">
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxM3" value="1">
+                        <label class="form-check-label" for="inlineCheckboxM3">M</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTu3" value="2">
+                        <label class="form-check-label" for="inlineCheckboxTu3">Tu</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxW3" value="3">
+                        <label class="form-check-label" for="inlineCheckboxW3">W</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTh3" value="4">
+                        <label class="form-check-label" for="inlineCheckboxTh3">Th</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxF3" value="5">
+                        <label class="form-check-label" for="inlineCheckboxF3">F</label>
+                        &ensp;
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+
+        <tr id="block4">
+            <td id="event-name4">
+                <input type="text" placeholder="Class Name" aria-label="event-name"
+                       class="form-control">
+            </td>
+            <td id="location4">
+                <select aria-label="location" class="custom-select" id="inputGroupSelect04">
+                    <option selected>Location</option>
+                    {% for all_building_names in all_building_names %}
+                    <option value="{{all_building_names}}">{{all_building_names}}</option>
+                    "
+                    {% endfor %}
+                </select>
+            </td>
+            <td id="start-time4">
+                <input type="time" placeholder="Start Time" aria-label="start-time">
+                <!--               <form class="form-time" method="POST" action="/edit_schedule">
+                                   {{ form.hidden_tag() }}
+                                   {{ wtf.form_field(form.start_time) }}
+                               </form>-->
+
+            <td id="end-time4">
+                <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
+
+                <!--
+                <form class="form-time" method="POST" action="/edit_schedule">
+                {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.end_time) }}
+                </form>-->
+            </td>
+            <td id="checkboxes4">
+                <div class="form-check">
+                    <div class="form-check form-check-inline">
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxM4" value="1">
+                        <label class="form-check-label" for="inlineCheckboxM4">M</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTu4" value="2">
+                        <label class="form-check-label" for="inlineCheckboxTu4">Tu</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxW4" value="3">
+                        <label class="form-check-label" for="inlineCheckboxW4">W</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTh4" value="4">
+                        <label class="form-check-label" for="inlineCheckboxTh4">Th</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxF4" value="5">
+                        <label class="form-check-label" for="inlineCheckboxF4">F</label>
+                        &ensp;
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+
+        <tr id="block5">
+            <td id="event-name5">
+                <input type="text" placeholder="Class Name" aria-label="event-name"
+                       class="form-control">
+            </td>
+            <td id="location5">
+                <select aria-label="location" class="custom-select" id="inputGroupSelect05">
+                    <option selected>Location</option>
+                    {% for all_building_names in all_building_names %}
+                    <option value="{{all_building_names}}">{{all_building_names}}</option>
+                    "
+                    {% endfor %}
+                </select>
+            </td>
+            <td id="start-time5">
+                <input type="time" placeholder="Start Time" aria-label="start-time">
+                <!--               <form class="form-time" method="POST" action="/edit_schedule">
+                                   {{ form.hidden_tag() }}
+                                   {{ wtf.form_field(form.start_time) }}
+                               </form>-->
+
+            <td id="end-time5">
+                <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
+
+                <!--
+                <form class="form-time" method="POST" action="/edit_schedule">
+                {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.end_time) }}
+                </form>-->
+            </td>
+            <td id="checkboxes5">
+                <div class="form-check">
+                    <div class="form-check form-check-inline">
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxM5" value="1">
+                        <label class="form-check-label" for="inlineCheckboxM5">M</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTu5" value="2">
+                        <label class="form-check-label" for="inlineCheckboxTu5">Tu</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxW5" value="3">
+                        <label class="form-check-label" for="inlineCheckboxW5">W</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTh5" value="4">
+                        <label class="form-check-label" for="inlineCheckboxTh5">Th</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxF5" value="5">
+                        <label class="form-check-label" for="inlineCheckboxF5">F</label>
+                        &ensp;
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+
+        <tr id="block6">
+            <td id="event-name6">
+                <input type="text" placeholder="Class Name" aria-label="event-name"
+                       class="form-control">
+            </td>
+            <td id="location6">
+                <select aria-label="location" class="custom-select" id="inputGroupSelect06">
+                    <option selected>Location</option>
+                    {% for all_building_names in all_building_names %}
+                    <option value="{{all_building_names}}">{{all_building_names}}</option>
+                    "
+                    {% endfor %}
+                </select>
+            </td>
+            <td id="start-time6">
+                <input type="time" placeholder="Start Time" aria-label="start-time">
+                <!--               <form class="form-time" method="POST" action="/edit_schedule">
+                                   {{ form.hidden_tag() }}
+                                   {{ wtf.form_field(form.start_time) }}
+                               </form>-->
+
+            <td id="end-time6">
+                <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
+
+                <!--
+                <form class="form-time" method="POST" action="/edit_schedule">
+                {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.end_time) }}
+                </form>-->
+            </td>
+            <td id="checkboxes6">
+                <div class="form-check">
+                    <div class="form-check form-check-inline">
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxM6" value="1">
+                        <label class="form-check-label" for="inlineCheckboxM6">M</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTu6" value="2">
+                        <label class="form-check-label" for="inlineCheckboxTu6">Tu</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxW6" value="3">
+                        <label class="form-check-label" for="inlineCheckboxW6">W</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTh6" value="4">
+                        <label class="form-check-label" for="inlineCheckboxTh6">Th</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxF6" value="5">
+                        <label class="form-check-label" for="inlineCheckboxF6">F</label>
+                        &ensp;
+                    </div>
+                </div>
+
+            </td>
+        </tr>
+
+        <tr id="block7">
+            <td id="event-name7">
+                <input type="text" placeholder="Class Name" aria-label="event-name"
+                       class="form-control">
+            </td>
+            <td id="location7">
+                <select aria-label="location" class="custom-select" id="inputGroupSelect07">
+                    <option selected>Location</option>
+                    {% for all_building_names in all_building_names %}
+                    <option value="{{all_building_names}}">{{all_building_names}}</option>
+                    "
+                    {% endfor %}
+                </select>
+            </td>
+            <td id="start-time7">
+                <input type="time" placeholder="Start Time" aria-label="start-time">
+                <!--               <form class="form-time" method="POST" action="/edit_schedule">
+                                   {{ form.hidden_tag() }}
+                                   {{ wtf.form_field(form.start_time) }}
+                               </form>-->
+
+            <td id="end-time7">
+                <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
+
+                <!--
+                <form class="form-time" method="POST" action="/edit_schedule">
+                {{ form.hidden_tag() }}
+                    {{ wtf.form_field(form.end_time) }}
+                </form>-->
+            </td>
+            <td id="checkboxes7">
+                <div class="form-check">
+                    <div class="form-check form-check-inline">
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxM7" value="1">
+                        <label class="form-check-label" for="inlineCheckboxM7">M</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTu7" value="2">
+                        <label class="form-check-label" for="inlineCheckboxTu7">Tu</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxW7" value="3">
+                        <label class="form-check-label" for="inlineCheckboxW7">W</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxTh7" value="4">
+                        <label class="form-check-label" for="inlineCheckboxTh7">Th</label>
+                        &ensp;
+                        <input class="form-check-input" type="checkbox" id="inlineCheckboxF7" value="5">
+                        <label class="form-check-label" for="inlineCheckboxF7">F</label>
+                        &ensp;
                     </div>
                 </div>
 
