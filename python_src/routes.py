@@ -9,6 +9,8 @@ from flask_login import LoginManager, login_user, login_required,\
     logout_user, current_user
 from wtforms import StringField, BooleanField
 from wtforms.validators import InputRequired, Email, Length
+from wtforms_components import TimeField
+
 
 
 app.config['SECRET_KEY'] = 'asdf'
@@ -27,6 +29,11 @@ class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Length(max=50)])
     password = StringField('password', validators=[InputRequired(), Length(max=25)])
     remember = BooleanField('remember me')
+
+
+class TimeForm(FlaskForm):
+    start_time = TimeField('time', validators=[InputRequired()])
+    end_time = TimeField('time', validators=[InputRequired()])
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -51,6 +58,9 @@ def home():
     print(all_building_names)
     return render_template("home.html", all_building_names=all_building_names)
 
+@app.route('/home')
+def about():
+    return render_template("home.html")
 
 @app.route('/new_route', methods=['GET'])
 @login_required
@@ -67,7 +77,8 @@ def edit_schedule():
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
     print(all_building_names)
-    return render_template("edit_schedule.html", all_building_names=all_building_names)
+    tf = TimeForm()
+    return render_template("edit_schedule.html", form=tf, all_building_names=all_building_names)
 
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
