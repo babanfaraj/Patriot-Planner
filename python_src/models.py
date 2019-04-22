@@ -1,95 +1,45 @@
 import geopy.distance
 
+from datetime import datetime
 from python_src import db
+from flask_login import UserMixin
 
 
-class Building(db.Model):
-    __tablename__ = 'building'
-    building_name = db.Column(db.String(50), primary_key=True)
-    is_study_location = db.Column(db.Boolean, nullable=False)
-
-    def entrances(self):
-        return Location.query.filter_by(building=self.building_name).all()
-
-    def restaurants(self):
-        return Restaurant.query.filter_by(building=self.building_name).all()
-
-    @staticmethod
-    def get(building_name):
-        """Gets the building table entry associated with a building name"""
-        return Building.query.filter_by(building_name=building_name).first()
-
-    @staticmethod
-    def print_all():
-        """Prints every entry in the table"""
-        header = '{:50} | {:20} | '
-        print(header.format('building_name', 'is_study_location'))
-        [print(_) for _ in Building.query.all()]
-
-    @staticmethod
-    def all_names():
-        return [_.building_name for _ in Building.query.all()]
-
-    def __str__(self):
-        rep = '{:50} | {:20} | '
-        return rep.format(self.building_name, self.is_study_location)
-
-    def __repr__(self):
-        return 'Building({})'.format(self.building_name)
-
-
-class Location(db.Model):
-    __tablename__ = 'location'
-    location_name = db.Column(db.String(25), primary_key=True)
-    latitude = db.Column(db.Float, nullable=False)
-    longitude = db.Column(db.Float, nullable=False)
-    building = db.Column(db.String(50), primary_key=True)
-    is_parking_lot = db.Column(db.Boolean, nullable=False)
-
-    def coords(self):
-        """Gets the coordinates of a location
-        :return: A two tuple (longitude, latitude)
-        """
-        return self.longitude, self.latitude
-
-    @staticmethod
-    def dist(loc1, loc2, unit='ft'):
-        """Gets the distance between two locations in some unit.
-        :param loc1: The initial location.
-        :type loc1: Location
-        :param loc2: The destination location.
-        :type loc2: Location
-        :param unit: The unit of measure either feet ('ft') or meters ('m'),
-                     defaults to feet.
-        :type unit: str
-        :return: The distance from loc1 to loc2 in the unit.
-        :raises: ValueError when an invalid unit is input
-        """
-        if unit == 'ft' or unit == 'feet':
-            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).ft
-        if unit == 'm' or unit == 'meter':
-            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).m
-        else:
-            raise ValueError('The unit must be either \'m\' or \'ft\'')
-
-    @staticmethod
-    def get(location_name):
-        """Gets the location table entry associated with a location name"""
-        return Location.query.filter_by(location_name=location_name).first()
-
-    def __repr__(self):
-        rep = ('Location(location_name={}, latitude={}, longitude={}, '
-               + 'building = {}, is_parking_lot={})')
-        return rep.format(self.location_name, self.latitude, self.longitude,
-                          self.building, self.is_parking_lot)
-
-
-class Student(db.Model):
+class Student(db.Model, UserMixin):
     __tablename__ = 'student'
     email = db.Column(db.String(50), primary_key=True)
     first_name = db.Column(db.String(25), nullable=False)
     last_name = db.Column(db.String(25), nullable=False)
     password = db.Column(db.String(25), nullable=False)
+
+    def todays_schedule(self):
+        today = datetime.today()
+        year = str(today.year)
+
+        if today.month in [1, 2, 3, 4, 5]:
+            semester = 'spring'
+        elif today.month in [8, 9, 10, 11, 12]:
+            semester = 'fall'
+        else:
+            semester = 'summer'
+
+        day = today.weekday()
+        if day in [5, 6]:
+            return []
+        return self.get_weekly_schedule(year, semester)[day]
+
+    def current_weekly_schedule(self):
+        today = datetime.today()
+        year = str(today.year)
+
+        if today.month in [1, 2, 3, 4, 5]:
+            semester = 'spring'
+        elif today.month in [8, 9, 10, 11, 12]:
+            semester = 'fall'
+        else:
+            semester = 'summer'
+
+        return self.get_weekly_schedule(year, semester)
 
     def get_weekly_schedule(self, year, semester):
         """Gets the weekly
@@ -193,6 +143,9 @@ class Student(db.Model):
         print(header.format('email', 'first_name', 'last_name', 'password'))
         [print(_) for _ in Student.query.all()]
 
+    def get_id(self):
+        return self.email
+
     def __str__(self):
         # Don't print the user's password when __repr__ is called
         p = ''
@@ -209,6 +162,83 @@ class Student(db.Model):
 
         rep = 'Student(email={}, first_name={}, last_name={}, password={})'
         return rep.format(self.email, self.first_name, self.last_name, p)
+
+
+class Building(db.Model):
+    __tablename__ = 'building'
+    building_name = db.Column(db.String(50), primary_key=True)
+    is_study_location = db.Column(db.Boolean, nullable=False)
+
+    def entrances(self):
+        return Location.query.filter_by(building=self.building_name).all()
+
+    def restaurants(self):
+        return Restaurant.query.filter_by(building=self.building_name).all()
+
+    @staticmethod
+    def get(building_name):
+        """Gets the building table entry associated with a building name"""
+        return Building.query.filter_by(building_name=building_name).first()
+
+    @staticmethod
+    def print_all():
+        """Prints every entry in the table"""
+        header = '{:50} | {:20} | '
+        print(header.format('building_name', 'is_study_location'))
+        [print(_) for _ in Building.query.all()]
+
+    def __str__(self):
+        rep = '{:50} | {:20} | '
+        return rep.format(self.building_name, self.is_study_location)
+
+    def __repr__(self):
+        return 'Building({})'.format(self.building_name)
+
+
+class Location(db.Model):
+    __tablename__ = 'location'
+    location_name = db.Column(db.String(25), primary_key=True)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    building = db.Column(db.String(50), primary_key=True)
+    is_parking_lot = db.Column(db.Boolean, nullable=False)
+
+    def coords(self):
+        """Gets the coordinates of a location
+        :return: A two tuple (longitude, latitude)
+        """
+        return self.longitude, self.latitude
+
+    @staticmethod
+    def dist(loc1, loc2, unit='ft'):
+        """Gets the distance between two locations in some unit.
+        :param loc1: The initial location.
+        :type loc1: Location
+        :param loc2: The destination location.
+        :type loc2: Location
+        :param unit: The unit of measure either feet ('ft') or meters ('m'),
+                     defaults to feet.
+        :type unit: str
+        :return: The distance from loc1 to loc2 in the unit.
+        :raises: ValueError when an invalid unit is input
+        """
+        if unit == 'ft' or unit == 'feet':
+            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).ft
+        if unit == 'm' or unit == 'meter':
+            return geopy.distance.vincenty(loc1.coords(), loc2.coords()).m
+        else:
+            raise ValueError('The unit must be either \'m\' or \'ft\'')
+
+    @staticmethod
+    def get(location_name):
+        """Gets the location table entry associated with a location name"""
+        return Location.query.filter_by(location_name=location_name).first()
+
+    def __repr__(self):
+        rep = ('Location(location_name={}, latitude={}, longitude={}, '
+               + 'building = {}, is_parking_lot={})')
+        return rep.format(self.location_name, self.latitude, self.longitude,
+                          self.building, self.is_parking_lot)
 
 
 class Edge(db.Model):
@@ -375,10 +405,10 @@ if __name__ == '__main__':
         print(d)
     carlos.update_password('new_password')
     if ClassTime.get(student_email=carlos.email, class_name='CS333',
-                     year='2017', semester='Spring') is None:
-        carlos.add_class(class_name='CS333', year='2017', semester='Spring',
+                     year='2019', semester='Spring') is None:
+        carlos.add_class(class_name='CS333', year='2019', semester='Spring',
                          start_time='09:00:00', end_time='10:15:00',
                          building='Merten Hall', week_days='MWF')
-    else:
-        carlos.delete_class(year='2017', semester='Spring', class_name='CS333')
+
+    print(carlos.todays_schedule())
 
