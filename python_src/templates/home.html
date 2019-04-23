@@ -66,7 +66,7 @@
         </tr>
         </thead>
         <tbodytr>
-        {% if current_weekly_schedule is not none %}
+        {% if current_weekly_schedule is not none and current_weekly_schedule | length > 0 %}
           <td>{{ current_weekly_schedule[0].class_name }} </td>
           <td>{{ current_weekly_schedule[0].building }}</td>
           <td>{{ current_weekly_schedule[0].start_time }} - {{ current_weekly_schedule[0].end_time }}</td>
@@ -87,7 +87,7 @@
           <tr> Nothing scheduled. Enjoy your day! </tr>
         {% endif %}
 
-        </tbody>
+        </tbodytr>
     </table>
 </div>
 
