@@ -104,8 +104,8 @@ def new_route():
 
         bestpath = get_best_path(get_graph(), start, end)
         if bestpath is not None:
-            display_path(path_to_gmaps_link(bestpath))
-        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath), all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
+            display_path(path_to_gmaps_link(bestpath[0]))
+        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath[0]), all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
 
 @app.route('/edit_schedule', methods=['GET'])
 @login_required
