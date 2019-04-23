@@ -34,7 +34,7 @@
           <button type="button" onClick="login()" class="btn btn-primary btn-lg btn-block">Log In</button>
           !-->
           <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
-          <button type="button" class="btn btn-secondary btn-lg btn-block">Create Account</button>
+          <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="window.location.href = '{{ url_for('create_account') }}';">Create Account</button>
         </form>
     </div>
 </div>

@@ -15,12 +15,15 @@ def are_valid_credentials(email, password):
                                    password=password).first() is not None
 
 
-def create_student(student_info, classes, study_preference):
+def create_student(student_info, classes=None, study_preference=None):
     db.session.add(student_info)
     db.session.commit()
-    for c in classes:
-        db.session.add(c)
-    db.session.add(study_preference)
-    db.session.commit()
+    if classes is not None:
+        for c in classes:
+            db.session.add(c)
+    if study_preference is not None:
+        db.session.add(study_preference)
+    if study_preference is not None or classes is not None:
+        db.session.commit()
 
 

@@ -1,29 +1,24 @@
 from datetime import datetime
 from python_src import app
-from python_src.models import Building
-from python_src.path_finding import find_optimal_class_path, path_to_gmaps_link
-from flask import render_template, flash, redirect, url_for
-from python_src.forms import PasswordChange, DeleteAccount, ResetAccount
-from python_src.models import Student
-from python_src import db_connection as db_conn
-from python_src.path_finding import get_best_path, path_to_gmaps_link, display_path
-from python_src.forms import PasswordChange
-from flask import render_template, redirect, url_for
+from python_src.models import Building, Student
+from flask import render_template, flash, redirect, url_for, request
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager, login_user, login_required,\
+from flask_login import LoginManager, login_user, login_required, \
     logout_user, current_user
+from python_src.forms import PasswordChange, DeleteAccount, ResetAccount, RegistrationForm
+from python_src.path_finding import get_best_path, path_to_gmaps_link, display_path, find_optimal_class_path
+from python_src import db_connection as db_conn
+from python_src.forms import PasswordChange
 from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
 from wtforms.widgets import PasswordInput
-from flask import Flask, request, redirect
 from python_src.models import get_graph, get_weekly_schedule_study, StudyInfo
 
 
 # app = Flask(__name__)
 
-app.config['SECRET_KEY'] = 'asdf'
 Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -57,8 +52,20 @@ def login():
             return redirect(url_for('home'))
         else:
             return '<h1> Invalid credentials </h1>'
-    return render_template("index.html", form=form)
+    return render_template('index.html', form=form)
 
+
+@app.route('/create-account', methods=['GET', 'POST'])
+def create_account():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        stud = Student(email=form.email.data,
+                       first_name=form.first_name.data,
+                       last_name=form.last_name.data,
+                       password=form.password.data)
+        db_conn.create_student(stud, )
+        return redirect(url_for('login'))
+    return render_template('create_account.html', form=form)
 
 @app.route('/')
 @app.route('/home', methods=['GET'])
@@ -68,7 +75,7 @@ def home():
     todays_schedule.sort(key=lambda _: _.start_time)
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
-    return render_template("home.html", current_weekly_schedule=todays_schedule,
+    return render_template('home.html', current_weekly_schedule=todays_schedule,
                            all_building_names=all_building_names)
 
 @app.route('/home')

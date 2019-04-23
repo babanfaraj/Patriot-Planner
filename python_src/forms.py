@@ -2,18 +2,20 @@ from python_src import app
 from flask import render_template
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms.widgets import PasswordInput
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Username',
-                           validators=[DataRequired(), Length(min=2, max=20)])
     email = StringField('Email',
-                        validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+                        validators=[Length(max=50), DataRequired(), Email()])
+    password = PasswordField('Password', validators=[DataRequired(), Length(min=5, max=25)],
+                             widget=PasswordInput(hide_value=True))
     confirm_password = PasswordField('Confirm Password',
-                                     validators=[DataRequired(), EqualTo('password')])
+                                     validators=[DataRequired(), EqualTo('password')],
+                                     widget=PasswordInput(hide_value=True))
+    first_name = StringField('First Name', validators=[Length(max=25), DataRequired()])
+    last_name = StringField('Last Name', validators=[Length(max=25), DataRequired()])
     submit = SubmitField('Sign Up')
 
 
