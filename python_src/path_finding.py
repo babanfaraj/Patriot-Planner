@@ -1,9 +1,7 @@
 import webbrowser
 import heapq
 
-from python_src.models import Location, Building
-from python_src.db_connection import get_graph
-from python_src.db_connection import *
+from python_src.models import Location, Building, Student
 from python_src.viz import visualize_map
 
 
@@ -11,7 +9,7 @@ def display_path(url):
     webbrowser.open_new_tab(url)
 
 
-def find_optimal_class_path(classes, start_loc=None):
+def find_optimal_class_path(graph, classes, start_loc=None):
     """
     :param start_loc: A starting location.
     :param classes:
@@ -24,7 +22,6 @@ def find_optimal_class_path(classes, start_loc=None):
     building_lookup = {c.class_name: Building.get(c.building) for c in classes}
 
     optimal_path = []
-    graph = get_graph()
     if start_loc is not None:
         closest_pair = []
         min_dist = float('Inf')
@@ -34,7 +31,6 @@ def find_optimal_class_path(classes, start_loc=None):
                 min_dist = dist
                 closest_pair = [start_loc, end]
         optimal_path.append(get_best_path(graph, closest_pair[0], closest_pair[1])[0])
-
 
     # Get the optimal path from one class to the class immediately after
     # Checks multiple entrances for X class to find most optimal route
@@ -47,6 +43,7 @@ def find_optimal_class_path(classes, start_loc=None):
                 if min_dist > dist:
                     min_dist = dist
                     closest_pair = [start, end]
+        print(closest_pair)
         current_optimal_path = get_best_path(graph, closest_pair[0], closest_pair[1])
         optimal_path.append(current_optimal_path[0])
     return optimal_path
@@ -85,11 +82,13 @@ def get_best_path(graph, start_loc, end_loc):
 
         # Exit if an end location has been hit
         if cur_loc_name == end_loc.location_name:
-            shortest_path = [loc_lookup[predecesors[cur_loc_name]]]
+            shortest_path = [loc_lookup[cur_loc_name]]
             predecesor = predecesors[cur_loc_name]
             total_dist = dists[cur_loc_name]
             while predecesor is not None:
                 shortest_path.insert(0, loc_lookup[predecesor])
+                if loc_lookup[predecesor].building == start_loc.building:
+                    break
                 total_dist += dists[predecesor]
                 predecesor = predecesors[predecesor]
             return shortest_path, total_dist
