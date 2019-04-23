@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
-from python_src import db_connection as db_conn
 from python_src.models import Edge
+from python_src.models import get_graph
 
 
 def visualize_map(path=None, label_nodes=True):
@@ -19,7 +19,7 @@ def visualize_map(path=None, label_nodes=True):
     plotted_locs = set()
     plotted_edges = set()
 
-    graph = db_conn.get_graph(include_inactive_edges=True)
+    graph = get_graph(include_inactive_edges=True)
     for parent_node, child_nodes in graph.items():
         x1, y1 = parent_node.coords()
         if parent_node.location_name not in plotted_locs:

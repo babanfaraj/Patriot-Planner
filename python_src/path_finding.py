@@ -1,102 +1,111 @@
 import webbrowser
 import heapq
 
-from python_src.models import Location, Building
-from python_src.db_connection import get_graph
-from python_src.db_connection import *
+from python_src.models import Location, Building, Student
 from python_src.viz import visualize_map
+
 
 def display_path(url):
     webbrowser.open_new_tab(url)
 
-def find_optimal_class_path(start_loc, classes):
+
+def find_optimal_class_path(graph, classes, start_loc=None):
     """
     :param start_loc: A starting location.
     :param classes:
       A list of class locations in chronological order, Assume these classes all occur on the same day.
     """
-    if classes is None or len(classes) == 0:
+    if classes is None or len(classes) < 2:
         return []
 
-    # Gets the graph of gmu with location nodes and edges weighted by distance
+    # Lookup used to minimize the number of queries
+    building_lookup = {c.class_name + c.start_time: Building.get(c.building) for c in classes}
 
-    # Checks multiple entrances for the first class to find most optimal route
-    least_distance = 9999999
     optimal_path = []
-    current_best_path = None
-    #print("First Class: ", classes[0])
-    # building_entrances = Building.get(classes[0].building).entrances()
     if start_loc is not None:
         closest_pair = []
         min_dist = float('Inf')
-        for end in Building.get(classes[0].building).entrances():
+        for end in building_lookup[classes[0].class_name + classes[0].start_time].entrances():
             dist = Location.dist(start_loc, end)
             if min_dist > dist:
                 min_dist = dist
                 closest_pair = [start_loc, end]
-        optimal_path.append(get_best_path(get_graph(), closest_pair[0], closest_pair[1])[0])
+        optimal_path.append(get_best_path(graph, closest_pair[0], closest_pair[1])[0])
 
     # Get the optimal path from one class to the class immediately after
     # Checks multiple entrances for X class to find most optimal route
     for i in range(1, len(classes)):
         closest_pair = []
         min_dist = float('Inf')
-        for start in Building.get(classes[i - 1].building).entrances():
-            for end in Building.get(classes[i].building).entrances():
+        for start in building_lookup[classes[i - 1].class_name + classes[i - 1].start_time].entrances():
+            for end in building_lookup[classes[i].class_name + classes[i].start_time].entrances():
                 dist = Location.dist(start, end)
                 if min_dist > dist:
                     min_dist = dist
                     closest_pair = [start, end]
-        current_optimal_path = get_best_path(get_graph(), closest_pair[0], closest_pair[1])
+        print(closest_pair)
+        current_optimal_path = get_best_path(graph, closest_pair[0], closest_pair[1])
         optimal_path.append(current_optimal_path[0])
     return optimal_path
 
 
-def get_best_path(graph, start, end):
-    """
+def get_best_path(graph, start_loc, end_loc):
+    """ Uses A* search to find the best route from a start location to an end
+    location
     :param graph: Graph contains location nodes
     :param start: Starting location node
     :param end:   End location node
     :return:      shortest_path
     """
-    # Contains shortest distances from each node
-    distance_dic = {}
-    # Contains predecessors of each node
-    predecessor_dic = {}
-    locations_not_visited = graph
-    infinity = float('Inf')
-    shortest_path = []
-    # Go through each node and set its distance to infinity
-    for current_location in locations_not_visited:
-        distance_dic[current_location] = infinity
+    # Map each location name to its location object (to avoid database queries)
+    loc_lookup = {l.location_name: l for l in graph.keys()}
 
-    # Inserting shortest distance of starting location as 0 obv.
-    distance_dic[start] = 0
-    # Iterate through each node in graph
-    while locations_not_visited:
-        smallest_node = None
-        # Gets smallest node of all other nodes from starting location
-        for current_node in locations_not_visited:
-            if smallest_node is None:
-                smallest_node = current_node
-            elif distance_dic[current_node] < distance_dic[smallest_node]:
-                smallest_node = current_node
-        # Check all child nodes of smallest node with its weights
-        # If weight is less than what is stored in distance_dic
-        #   Then update weight and predecessor
-        for childNode in graph[smallest_node]:
-            weight = Location.dist(smallest_node, childNode)
-            if weight + distance_dic[smallest_node] < distance_dic[childNode]:
-                distance_dic[childNode] = weight + distance_dic[smallest_node]
-                predecessor_dic[childNode] = smallest_node
-        locations_not_visited.pop(smallest_node)
+    # Set the initial distances from the start node to each other node to inf
+    dists = {l.location_name: float('Inf') for l in graph.keys()}
+    dists[start_loc.location_name] = 0
 
-    current_node = end
-    while current_node != start:
-            shortest_path.insert(0, current_node)
-            current_node = predecessor_dic[current_node]
-    shortest_path.insert(0, start)
-    return shortest_path, distance_dic[end]
+    # A dictionary of each visited node's predecessor
+    predecesors = {start_loc.location_name: None}
+
+    # Initialize the min heap with the initial distances
+    # For an actual distance, g, and a heuristic distance, h, each loc's
+    # heap node is [h + g, g, loc.location_name]
+    min_heap = []
+    heapq.heappush(min_heap, [0, start_loc.location_name])
+    visited = set()
+
+    while min_heap is not None:
+        cur_dist, cur_loc_name = heapq.heappop(min_heap)
+        if cur_loc_name in visited:
+            continue
+        visited.add(cur_loc_name)
+
+        # Exit if an end location has been hit
+        if cur_loc_name == end_loc.location_name:
+            shortest_path = [loc_lookup[cur_loc_name]]
+            predecesor = predecesors[cur_loc_name]
+            total_dist = dists[cur_loc_name]
+            while predecesor is not None:
+                shortest_path.insert(0, loc_lookup[predecesor])
+                if loc_lookup[predecesor].building == start_loc.building:
+                    break
+                total_dist += dists[predecesor]
+                predecesor = predecesors[predecesor]
+            return shortest_path, total_dist
+
+        # Insert/Update each neighbor
+        cur_loc = loc_lookup[cur_loc_name]
+        for neighbor_loc in graph[cur_loc]:
+            neighbor_loc_name = neighbor_loc.location_name
+            dist = dists[cur_loc_name] + Location.dist(cur_loc, neighbor_loc)
+            if dist < dists[neighbor_loc_name]:
+                dists[neighbor_loc_name] = dist
+
+                heuristic_dist = Location.dist(neighbor_loc, end_loc)
+                heapq.heappush(min_heap, [dist + heuristic_dist,
+                                          neighbor_loc_name])
+                predecesors[neighbor_loc_name] = cur_loc_name
+    return [], 0
 
 
 def path_to_gmaps_link(path):
@@ -108,32 +117,13 @@ def path_to_gmaps_link(path):
 
 
 if __name__ == '__main__':
-    graph = get_graph()
-    start = None
-    end = None
-    # print(graph)
-    for currentNode in graph.keys():
-        if currentNode.location_name == "MH1":
-            start = currentNode
-            # print("Start: ", start)
-        if currentNode.location_name == "AB1":
-            end = currentNode
-            # print("End: ", end)
-
-    #shortest_path = get_best_path(graph, start, end)
-    #print("Shortest Path: ",shortest_path[1])
     stud1 = Student.get('cguerra5@masonlive.gmu.edu')
-    stud1.study_preference()
-    weekly_classes = stud1.get_weekly_schedule(year=2019, semester='spring')
-    optimal_class_path = find_optimal_class_path(start, stud1.all_classes())
-    print(optimal_class_path)
-    #for loc in shortest_path:
-    #    print(loc.location_name)
-    #visualize_map(path=optimal_class_path[0])
-    url = "http://www.google.com/"
-    webbrowser.open_new_tab(url)
-
+    monday_classes = stud1.get_weekly_schedule(year=2019, semester='spring')[0]
+    #find_optimal_class_path(monday_classes)
+    optimal_class_path = find_optimal_class_path(monday_classes)
+    '''
     for path in optimal_class_path:
         visualize_map(path=path)
-        display_path(path_to_gmaps_link(path))
+       #display_path(path_to_gmaps_link(path))
+    '''
 

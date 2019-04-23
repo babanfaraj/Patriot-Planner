@@ -47,31 +47,64 @@
 
 <div class="container half-width">
     <h5 style="text-align:center;"> Need to go somewhere else?</h5>
-    <div class="input-group">
-        <select class="custom-select" id="inputGroupSelect03" aria-label="Example select with button addon" method="GET"
-                action="/home">
-            <option selected>Starting Point</option>
-            {% for all_building_names in all_building_names %}
-            <option value="{{all_building_names}}">{{all_building_names}}</option>
-            "
-            {% endfor %}
-        </select>
-    </div>
+    <!--    <div class="input-group">-->
+    <!--        <select class="custom-select" id="inputGroupSelect03" aria-label="Example select with button addon" method="GET"-->
+    <!--                action="/home">-->
+    <!--            <option selected>Starting Point</option>-->
+    <!--            {% for all_building_names in all_building_names %}-->
+    <!--            <option value="{{all_building_names}}">{{all_building_names}}</option>-->
+    <!--            "-->
+    <!--            {% endfor %}-->
+    <!--        </select>-->
+    <!--    </div>-->
 
-    to
 
-    <div class="input-group">
-        <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">
-            <option selected>Destination</option>
-            {% for all_building_names in all_building_names %}
-            <option value="{{all_building_names}}">{{all_building_names}}</option>
-            "
-            {% endfor %}
-        </select>
-        <div class="input-group-append">
-            <button class="btn btn-outline-secondary" type="button">Go!</button>
+    <form class="form-inline" method="POST" action="{{ url_for('new_route') }}">
+        <div class="form-group">
+            <div class="input-group">
+                <span class="input-group-addon">Please select</span>
+                <select name="start_loc" class="selectpicker form-control">
+                    <option selected>Starting Point</option>
+                    {% for all_building_names in all_building_names %}
+                    <option value="{{all_building_names}}">{{all_building_names}}</option>
+                    "
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="submit" class="btn btn-default">Go</button>
         </div>
-    </div>
+        <form class="form-inline" method="POST" action="{{ url_for('new_route') }}">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">Please select</span>
+                    <select name="end_loc" class="selectpicker form-control">
+                        <option selected>End Point</option>
+                        {% for all_building_names in all_building_names %}
+                        <option value="{{all_building_names}}">{{all_building_names}}</option>
+                        "
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-default">Go</button>
+            </div>
+        </form>
+    </form>
+
+    <a href="{{ gmaps_link }}"> Goto Google Maps </a>
+
+
+    <!--    <div class="input-group">-->
+    <!--        <select class="custom-select" id="inputGroupSelect04" aria-label="Example select with button addon">-->
+    <!--            <option selected>Destination</option>-->
+    <!--            {% for all_building_names in all_building_names %}-->
+    <!--            <option value="{{all_building_names}}">{{all_building_names}}</option>-->
+    <!--            "-->
+    <!--            {% endfor %}-->
+    <!--        </select>-->
+    <!--        <div class="input-group-append">-->
+    <!--            <button class="btn btn-outline-secondary" type="button">Go!</button>-->
+    <!--        </div>-->
+    <!--    </div>-->
 </div>
 </body>
 </html>

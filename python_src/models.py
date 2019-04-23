@@ -402,6 +402,45 @@ class StudyInfo:
         self.start_time = start_time
         self.end_time = end_time
         self.building = building
+        self.class_name = 'Study Time'
+
+    def __repr__(self):
+        return f'StudyInfo({self.start_time}, {self.end_time}, {self.building}, {self.class_name})'
+
+
+def get_graph(include_inactive_edges=False):
+    """Gets the graph of active paths on the mason campus.
+    :return: An adjacency list of the active paths.
+    :rtype: dict(Location: List[Location])
+    """
+    adjacency_list = {l: [] for l in Location.query.all()}
+
+    for e in Edge.query.all():
+        if include_inactive_edges or e.is_active:
+            loc1 = Location.query.filter_by(location_name=e.location1).first()
+            loc2 = Location.query.filter_by(location_name=e.location2).first()
+            adjacency_list[loc1].append(loc2)
+            adjacency_list[loc2].append(loc1)
+
+    return adjacency_list
+
+
+from python_src.build_schedule import ScheduleBuilder
+
+
+def get_weekly_schedule_study(stud):
+    today = datetime.today()
+    year = str(today.year)
+
+    if today.month in [1, 2, 3, 4, 5]:
+        semester = 'spring'
+    elif today.month in [8, 9, 10, 11, 12]:
+        semester = 'fall'
+    else:
+        semester = 'summer'
+
+    schedule = ScheduleBuilder(get_graph())
+    return schedule.build_schedule(stud.email, semester, year)
 
 
 if __name__ == '__main__':

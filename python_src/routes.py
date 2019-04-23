@@ -1,22 +1,24 @@
+from datetime import datetime
 from python_src import app
-from python_src.models import Student, Building
-from python_src.path_finding import find_optimal_class_path, path_to_gmaps_link
-from flask import render_template, flash, redirect, url_for
-from python_src.forms import PasswordChange,DeleteAccount, ResetAccount
-from python_src.models import Student
-from python_src import db_connection as db_conn
-from python_src.forms import PasswordChange
-from flask import render_template, redirect, url_for
+from python_src.models import Building, Student
+from flask import render_template, flash, redirect, url_for, request
 from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
-from flask_login import LoginManager, login_user, login_required,\
+from flask_login import LoginManager, login_user, login_required, \
     logout_user, current_user
+from python_src.forms import PasswordChange, DeleteAccount, ResetAccount, RegistrationForm
+from python_src.path_finding import get_best_path, path_to_gmaps_link, display_path, find_optimal_class_path
+from python_src import db_connection as db_conn
+from python_src.forms import PasswordChange
 from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
+from wtforms.widgets import PasswordInput
+from python_src.models import get_graph, get_weekly_schedule_study, StudyInfo
 
 
-app.config['SECRET_KEY'] = 'asdf'
+# app = Flask(__name__)
+
 Bootstrap(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -30,7 +32,8 @@ def load_user(user_email):
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Length(max=50)])
-    password = StringField('password', validators=[InputRequired(), Length(max=25)])
+    password = StringField('password', validators=[InputRequired(), Length(max=25)],
+                           widget=PasswordInput(hide_value=True))
     remember = BooleanField('remember me')
 
 
@@ -49,38 +52,63 @@ def login():
             return redirect(url_for('home'))
         else:
             return '<h1> Invalid credentials </h1>'
-    return render_template("index.html", form=form)
+    return render_template('index.html', form=form)
 
+
+@app.route('/create-account', methods=['GET', 'POST'])
+def create_account():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        stud = Student(email=form.email.data,
+                       first_name=form.first_name.data,
+                       last_name=form.last_name.data,
+                       password=form.password.data)
+        db_conn.create_student(stud, )
+        return redirect(url_for('login'))
+    return render_template('create_account.html', form=form)
 
 @app.route('/')
 @app.route('/home', methods=['GET'])
 @login_required
 def home():
-    current_weekly_schedule = current_user.todays_schedule()
-    paths = find_optimal_class_path(None, current_weekly_schedule)
-    paths.insert(0, [])
-    print(paths)
-    links = [[] if i == 0 else path_to_gmaps_link(p) for i, p in enumerate(paths)]
-    print(paths)
-    print(len(paths))
-    print(current_weekly_schedule)
+    todays_schedule = get_weekly_schedule_study(current_user)[datetime.today().weekday()]
+    todays_schedule.sort(key=lambda _: _.start_time)
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
-    print(all_building_names)
-    return render_template("home.html", current_weekly_schedule=zip(current_weekly_schedule, links),
+    return render_template('home.html', datetime=datetime, current_weekly_schedule=todays_schedule,
                            all_building_names=all_building_names)
 
 @app.route('/home')
 def about():
     return render_template("home.html")
 
-@app.route('/new_route', methods=['GET'])
+
+@app.route('/new_route', methods=['GET', 'POST'])
 @login_required
 def new_route():
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
-    print(all_building_names)
-    return render_template("new_route.html", all_building_names=all_building_names)
+    if request.method == "GET":
+        return render_template("new_route.html", all_building_names=all_building_names)
+    else:
+        start_loc = request.form.get('start_loc')
+        end_loc = request.form.get('end_loc')
+        print("Start Location:", start_loc)
+        print("End Location:", end_loc)
+        start = None
+        end   = None
+        for currentNode in get_graph().keys():
+            if currentNode.building == start_loc:
+                start = currentNode
+                # print("Start: ", start)
+            if currentNode.building == end_loc:
+                end = currentNode
+                #print("End: ", end)
+
+        bestpath = get_best_path(get_graph(), start, end)
+        if bestpath is not None:
+            display_path(path_to_gmaps_link(bestpath[0]))
+        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath[0]), all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
 
 
 @app.route('/edit_schedule', methods=['GET'])
@@ -118,3 +146,12 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
+@app.route('/gmaps-redirect/<start_building_name>/<end_building_name>')
+@login_required
+def gmaps_redirect(start_building_name, end_building_name):
+    graph = get_graph()
+    loc1 = StudyInfo('00:00:00', '00:00:00', start_building_name)
+    loc2 = StudyInfo('01:00:00', '00:00:00', end_building_name)
+    paths = find_optimal_class_path(graph, [loc1, loc2])
+    return redirect(path_to_gmaps_link(paths[0]))
