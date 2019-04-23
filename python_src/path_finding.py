@@ -121,7 +121,9 @@ if __name__ == '__main__':
     monday_classes = stud1.get_weekly_schedule(year=2019, semester='spring')[0]
     #find_optimal_class_path(monday_classes)
     optimal_class_path = find_optimal_class_path(monday_classes)
+    '''
     for path in optimal_class_path:
         visualize_map(path=path)
-        #display_path(path_to_gmaps_link(path))
+       #display_path(path_to_gmaps_link(path))
+    '''
 

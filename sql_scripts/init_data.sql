@@ -403,8 +403,8 @@ INSERT INTO student VALUES ('bfaraj@masonlive.gmu.edu', 'Baban', 'Faraj', 'passw
 -- VALUES format:
 -- (student_email, year, semester, class_name, building, start_time, end_time, week_days)
 INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'OR442', 'Music/Theater Building', '13:30:00', '16:10:00', 'F');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'CS484', 'Merten Hall', '12:00:00', '13:15:00', 'TR');
-INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'CS465', 'Innovation Hall', '16:30:00', '19:10:00', 'T');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'CS484', 'East Building', '12:00:00', '13:15:00', 'TR');
+INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'CS465', 'Planetary Hall', '16:30:00', '19:10:00', 'T');
 INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'CS321', 'Planetary Hall', '12:00:00', '13:15:00', 'MW');
 INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2019', 'spring', 'STAT350', 'Enterprise Hall', '15:00:00', '16:15:00', 'MW');
 INSERT INTO class_time VALUES ('cguerra5@masonlive.gmu.edu', '2018', 'spring', 'PHYS260-001', 'Nguyen Engineering Building', '08:30:00', '09:20:00', 'MWF');

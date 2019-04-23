@@ -16,6 +16,7 @@ from flask_login import LoginManager, login_user, login_required,\
 from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
+from wtforms.widgets import PasswordInput
 from flask import Flask, request, redirect
 from python_src.models import get_graph, get_weekly_schedule_study, StudyInfo
 
@@ -36,7 +37,8 @@ def load_user(user_email):
 
 class LoginForm(FlaskForm):
     email = StringField('email', validators=[InputRequired(), Length(max=50)])
-    password = StringField('password', validators=[InputRequired(), Length(max=25)])
+    password = StringField('password', validators=[InputRequired(), Length(max=25)],
+                           widget=PasswordInput(hide_value=True))
     remember = BooleanField('remember me')
 
 
