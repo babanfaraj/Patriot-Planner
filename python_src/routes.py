@@ -75,7 +75,7 @@ def home():
     todays_schedule.sort(key=lambda _: _.start_time)
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
-    return render_template('home.html', current_weekly_schedule=todays_schedule,
+    return render_template('home.html', datetime=datetime, current_weekly_schedule=todays_schedule,
                            all_building_names=all_building_names)
 
 @app.route('/home')
