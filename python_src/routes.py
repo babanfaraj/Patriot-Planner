@@ -3,7 +3,7 @@ from python_src import app
 from python_src.models import Building
 from python_src.path_finding import find_optimal_class_path, path_to_gmaps_link
 from flask import render_template, flash, redirect, url_for
-from python_src.forms import PasswordChange,DeleteAccount, ResetAccount
+from python_src.forms import PasswordChange, DeleteAccount, ResetAccount
 from python_src.models import Student
 from python_src import db_connection as db_conn
 from python_src.path_finding import get_best_path, path_to_gmaps_link, display_path
@@ -16,8 +16,8 @@ from flask_login import LoginManager, login_user, login_required,\
 from wtforms import StringField, BooleanField, TimeField
 from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
-from flask import Flask, request
-from python_src.models import get_graph, get_weekly_schedule_study
+from flask import Flask, request, redirect
+from python_src.models import get_graph, get_weekly_schedule_study, StudyInfo
 
 
 # app = Flask(__name__)
@@ -64,21 +64,9 @@ def login():
 def home():
     todays_schedule = get_weekly_schedule_study(current_user)[datetime.today().weekday()]
     todays_schedule.sort(key=lambda _: _.start_time)
-    print(current_user)
-    #todays_schedule = current_user.todays_schedule()
-    #todays_schedule = current_user.current_weekly_schedule()[0]
-    graph = get_graph()
-    print(graph)
-    paths = find_optimal_class_path(graph, todays_schedule)
-    paths.insert(0, [])
-    links = [[] if i == 0 else path_to_gmaps_link(p) for i, p in enumerate(paths)]
-    print(paths)
-    print(len(paths))
-    print(todays_schedule)
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
-    print(all_building_names)
-    return render_template("home.html", current_weekly_schedule=zip(todays_schedule, links),
+    return render_template("home.html", current_weekly_schedule=todays_schedule,
                            all_building_names=all_building_names)
 
 @app.route('/home')
@@ -149,3 +137,12 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+
+@app.route('/gmaps-redirect/<start_building_name>/<end_building_name>')
+@login_required
+def gmaps_redirect(start_building_name, end_building_name):
+    graph = get_graph()
+    loc1 = StudyInfo('00:00:00', '00:00:00', start_building_name)
+    loc2 = StudyInfo('01:00:00', '00:00:00', end_building_name)
+    paths = find_optimal_class_path(graph, [loc1, loc2])
+    return redirect(path_to_gmaps_link(paths[0]))

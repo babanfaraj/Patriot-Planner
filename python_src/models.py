@@ -404,6 +404,9 @@ class StudyInfo:
         self.building = building
         self.class_name = 'Study Time'
 
+    def __repr__(self):
+        return f'StudyInfo({self.start_time}, {self.end_time}, {self.building}, {self.class_name})'
+
 
 def get_graph(include_inactive_edges=False):
     """Gets the graph of active paths on the mason campus.

@@ -23,6 +23,9 @@ class ScheduleBuilder:
 
         weekly_schedule = cur_student.get_weekly_schedule(year, semester)
 
+        if cur_student.study_preference() is None:
+            return [[] for _ in range(5)]
+
         hours_left = cur_student.study_preference().weekly_hours
         min_cont_hours = cur_student.study_preference().min_cont_hours
         max_cont_hours = cur_student.study_preference().max_cont_hours
@@ -159,7 +162,7 @@ class ScheduleBuilder:
             end_time = _class.end_time.hour + _class.end_time.minute/60.0
             unavailable_times[i].append((start_time, end_time))
           unavailable_times[i].append((latest_time, 24))
-          i+=1
+          i += 1
 
         unavailable_times = self.remove_overlapping_unavailable(unavailable_times)
         return unavailable_times

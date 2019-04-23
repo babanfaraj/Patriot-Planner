@@ -15,17 +15,17 @@ def find_optimal_class_path(graph, classes, start_loc=None):
     :param classes:
       A list of class locations in chronological order, Assume these classes all occur on the same day.
     """
-    if classes is None or len(classes) == 0:
+    if classes is None or len(classes) < 2:
         return []
 
     # Lookup used to minimize the number of queries
-    building_lookup = {c.class_name: Building.get(c.building) for c in classes}
+    building_lookup = {c.class_name + c.start_time: Building.get(c.building) for c in classes}
 
     optimal_path = []
     if start_loc is not None:
         closest_pair = []
         min_dist = float('Inf')
-        for end in building_lookup[classes[0].class_name].entrances():
+        for end in building_lookup[classes[0].class_name + classes[0].start_time].entrances():
             dist = Location.dist(start_loc, end)
             if min_dist > dist:
                 min_dist = dist
@@ -37,8 +37,8 @@ def find_optimal_class_path(graph, classes, start_loc=None):
     for i in range(1, len(classes)):
         closest_pair = []
         min_dist = float('Inf')
-        for start in building_lookup[classes[i - 1].class_name].entrances():
-            for end in building_lookup[classes[i].class_name].entrances():
+        for start in building_lookup[classes[i - 1].class_name + classes[i - 1].start_time].entrances():
+            for end in building_lookup[classes[i].class_name + classes[i].start_time].entrances():
                 dist = Location.dist(start, end)
                 if min_dist > dist:
                     min_dist = dist

@@ -65,15 +65,27 @@
             <th id="col5" scope="col">Route</th>
         </tr>
         </thead>
-        <tbody>
-        {% for c, link in current_weekly_schedule %}
-        <tr>
-            <td>{{ c.class_name }} </td>
-            <td>{{ c.building }}</td>
-            <td>{{ c.start_time }} - {{ c.end_time }}</td>
-            <td><button onclick="window.location.href = '{{ link }}';"> Click Here </button></td>
-        </tr>
-        {% endfor %}
+        <tbodytr>
+        {% if current_weekly_schedule is not none %}
+          <td>{{ current_weekly_schedule[0].class_name }} </td>
+          <td>{{ current_weekly_schedule[0].building }}</td>
+          <td>{{ current_weekly_schedule[0].start_time }} - {{ current_weekly_schedule[0].end_time }}</td>
+          <td></td>
+          {% for i in range(1, current_weekly_schedule | length) %}
+            <tr>
+                <td>{{ current_weekly_schedule[i].class_name }} </td>
+                <td>{{ current_weekly_schedule[i].building }}</td>
+                <td>{{ current_weekly_schedule[i].start_time }} - {{ current_weekly_schedule[i].end_time }}</td>
+                {% if current_weekly_schedule[i].building != current_weekly_schedule[i - 1].building %}
+                  <td><button onclick="window.location.href = '{{ url_for('gmaps_redirect', start_building_name=current_weekly_schedule[i - 1].building, end_building_name=current_weekly_schedule[i].building) }}';"> Click Here </button></td>
+                {% else %}
+                  <td></td>
+                {% endif %}
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr> Nothing scheduled. Enjoy your day! </tr>
+        {% endif %}
 
         </tbody>
     </table>
