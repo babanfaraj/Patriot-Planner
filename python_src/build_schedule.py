@@ -244,7 +244,7 @@ class ScheduleBuilder:
                 if temp_path[1] < min_path_weight:
                     best_path = temp_path[0]
                     min_path_weight = temp_path[1]
-        visualize_map(path=best_path)
+        #visualize_map(path=best_path)
       #  print(best_path)
         return Building.get(best_path[len(best_path)-1].building)
 
