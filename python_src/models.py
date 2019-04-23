@@ -396,6 +396,10 @@ class MealTime(db.Model):
                           self.min_meal_hours, self.max_meal_hours,
                           self.earliest_time, self.latest_time)
 
+    @staticmethod
+    def get(student_email):
+        return MealTime.query.filter_by(student_email=student_email).first()
+
 
 class StudyInfo:
     def __init__(self, start_time, end_time, building):

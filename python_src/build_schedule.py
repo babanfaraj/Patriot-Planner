@@ -14,7 +14,6 @@ class ScheduleBuilder:
         Returns all the study times for a given week
         Maps study time to a nearby building that is along the path
         """
-
         cur_student = Student.get(email)
 
         if cur_student is None:
@@ -86,7 +85,26 @@ class ScheduleBuilder:
             for k in range(len(study_time_and_buildings[i])):
                 weekly_schedule[i].append(study_time_and_buildings[i][k])
             sorted(weekly_schedule[i], key=self.sort_study_classes)
+
+        weekly_schedule = self.add_meals(weekly_schedule, cur_student)
+   #     print("run")
         return weekly_schedule
+
+
+    def add_meals(self, weekly_schedule, cur_student):
+        meal_prefs = cur_student.meal_preference()
+        earliest_time = meal_prefs.earliest_time.hour + meal_prefs.earliest_time.minute/60.0
+        latest_time = meal_prefs.latest_time.hour + meal_prefs.latest_time.minute / 60.0
+        unavailable_times = self.find_unavailable_times(weekly_schedule, earliest_time, latest_time)
+        print(unavailable_times)
+        for i in range(len(weekly_schedule)):
+            self.fill_meals(weekly_schedule[i], meal_prefs)
+
+        print(meal_prefs)
+
+
+    def fill_meals(self, daily_schedule, meal_prefs):
+        print('fuhget about it')
 
     #Finds an individual study time
     def find_study_time(self, daily_available, study_length):
@@ -239,7 +257,7 @@ class ScheduleBuilder:
         for i in range(len(all_study_spots)):
             entrances = all_study_spots[i].entrances()
             for k in range(len(entrances)):
-                print(entrances[k])
+                #print(entrances[k])
                 temp_path = get_best_path(self.graph, middle_location, entrances[k])
                 if temp_path[1] < min_path_weight:
                     best_path = temp_path[0]
@@ -315,3 +333,6 @@ class ScheduleBuilder:
                 closest_distance = abs(value - _list[i])
                 index = i
         return index
+
+s = ScheduleBuilder(get_graph())
+a = s.build_schedule("cguerra5@masonlive.gmu.edu", "spring", "2018")
