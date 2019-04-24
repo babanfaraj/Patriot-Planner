@@ -48,3 +48,8 @@ class DeleteAccount (FlaskForm):
 class ResetAccount (FlaskForm):
     reset_account_confirmation = StringField('Reset Account Confirmation', validators=[DataRequired()])
     reset_btn = SubmitField('Reset Account')
+
+
+class AddClass (FlaskForm):
+    class_name=StringField('Class Name', validators=[DataRequired()])
+    add_btn = SubmitField('Add Class')

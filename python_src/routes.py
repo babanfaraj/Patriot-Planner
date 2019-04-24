@@ -6,7 +6,7 @@ from flask_wtf import FlaskForm
 from flask_bootstrap import Bootstrap
 from flask_login import LoginManager, login_user, login_required, \
     logout_user, current_user
-from python_src.forms import PasswordChange, DeleteAccount, ResetAccount, RegistrationForm
+from python_src.forms import PasswordChange, DeleteAccount, ResetAccount, RegistrationForm, AddClass
 from python_src.path_finding import get_best_path, path_to_gmaps_link, display_path, find_optimal_class_path
 from python_src import db_connection as db_conn
 from python_src.forms import PasswordChange
@@ -15,7 +15,6 @@ from wtforms.validators import InputRequired, Email, Length
 from wtforms_components import TimeField
 from wtforms.widgets import PasswordInput
 from python_src.models import get_graph, get_weekly_schedule_study, StudyInfo
-
 
 # app = Flask(__name__)
 
@@ -67,6 +66,7 @@ def create_account():
         return redirect(url_for('login'))
     return render_template('create_account.html', form=form)
 
+
 @app.route('/')
 @app.route('/home', methods=['GET'])
 @login_required
@@ -77,6 +77,7 @@ def home():
     all_building_names = [_.building_name for _ in all_buildings]
     return render_template('home.html', datetime=datetime, current_weekly_schedule=todays_schedule,
                            all_building_names=all_building_names)
+
 
 @app.route('/home')
 def about():
@@ -96,29 +97,45 @@ def new_route():
         print("Start Location:", start_loc)
         print("End Location:", end_loc)
         start = None
-        end   = None
+        end = None
         for currentNode in get_graph().keys():
             if currentNode.building == start_loc:
                 start = currentNode
                 # print("Start: ", start)
             if currentNode.building == end_loc:
                 end = currentNode
-                #print("End: ", end)
+                # print("End: ", end)
 
         bestpath = get_best_path(get_graph(), start, end)
         if bestpath is not None:
             display_path(path_to_gmaps_link(bestpath[0]))
-        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath[0]), all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
+        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath[0]),
+                               all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
 
 
-@app.route('/edit_schedule', methods=['GET'])
+@app.route('/edit_schedule', methods=['GET', 'POST'])
 @login_required
 def edit_schedule():
+    start_time = TimeField('time', validators=[InputRequired()])
+    end_time = TimeField('time', validators=[InputRequired()])
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
     print(all_building_names)
     tf = TimeForm()
-    return render_template("edit_schedule.html", form=tf, all_building_names=all_building_names)
+    add_class_form = AddClass()
+
+    if request.method == "GET":
+        return render_template("edit_schedule.html", form=tf, add_class_form= add_class_form, all_building_names=all_building_names)
+    elif request.method == "POST":
+        class_name = request.form.get('class_name')
+        print(class_name)
+        class_location = request.form.get('class_location')
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
+
+        return render_template("edit_schedule.html",  form=tf, add_class_form= add_class_form,
+                               all_building_names=all_building_names, class_name=class_name,
+                               class_location=class_location, start_time=start_time, end_time=end_time)
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -137,7 +154,8 @@ def settings():
     if reset_account_form.reset_account_confirmation.data == 'reset':
         current_user.reset_account()
         print("Reset ACCOUNT")
-    return render_template("settings.html",  form=form, title="password_change", delete_account_form=delete_account_form, reset_account_form=reset_account_form)
+    return render_template("settings.html", form=form, title="password_change", delete_account_form=delete_account_form,
+                           reset_account_form=reset_account_form)
 
 
 @app.route('/logout')
