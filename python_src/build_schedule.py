@@ -87,7 +87,7 @@ class ScheduleBuilder:
             sorted(weekly_schedule[i], key=self.sort_study_classes)
 
         weekly_schedule = self.add_meals(weekly_schedule, cur_student)
-   #     print("run")
+        print(weekly_schedule)
         return weekly_schedule
 
 
@@ -116,12 +116,22 @@ class ScheduleBuilder:
             else:
                 time -= 5
 
-  #      all_meal_locations = self.map_building_to_meal_time(weekly_schedule, weekly_meal_times)
-        print(weekly_meal_times)
-        Building.print_all()
-        b = Building.get('Johnson Center')
-        print(b.restaurants())
+        all_meal_locations = self.map_building_to_meal_time(weekly_schedule, weekly_meal_times)
 
+        for i in range(len(all_meal_locations)):
+            for k in range(len(all_meal_locations[i])):
+                start_hour = int(weekly_meal_times[i][k][0])
+                start_minute = round((weekly_meal_times[i][k][0] - start_hour) * 60.0)
+                end_hour = int(weekly_meal_times[i][k][1])
+                end_minute = round((weekly_meal_times[i][k][1] - end_hour) * 60.0)
+                start_time = datetime.time(start_hour, start_minute)
+                end_time = datetime.time(end_hour, end_minute)
+                meal_info = MealInfo(start_time, end_time, all_meal_locations[i][k])
+                weekly_schedule[i].append(meal_info)
+        print(all_meal_locations)
+        print(weekly_meal_times)
+
+        return weekly_schedule
    #     print(all_meal_locations)
 
 
@@ -152,7 +162,96 @@ class ScheduleBuilder:
 
         return meals
 
+    def map_building_to_meal_time(self, weekly_schedule, meal_times):
+        """
+        :param weekly_schedule: Weekly schedule of classes
+        :param study_times: Weekly study times
+        :return: Building user will study at
+        """
+      #  print(weekly_schedule)
+       # print(study_times)
+        meal_locations = [[], [], [], [], []]
+        start_end_buildings = [[], [], [], [], []]
+        for i in range(len(meal_times)):
+            for k in range(len(meal_times[i])):
+                start_end_buildings[i].append(self.find_classroom_before_after(weekly_schedule[i], meal_times[i][k]))
 
+
+       # print(start_end_buildings)
+        for i in range(len(start_end_buildings)):
+            for k in range(len(start_end_buildings[i])):
+                if len(start_end_buildings[i][k][0].restaurants()) > 0:
+                    meal_locations[i].append(start_end_buildings[i][k][0])
+                elif len(start_end_buildings[i][k][1].restaurants()) > 0:
+                    meal_locations[i].append(start_end_buildings[i][k][1])
+                else:
+                    spot_on_path = self.find_meal_spot_on_path(start_end_buildings[i][k][0], start_end_buildings[i][k][1])
+                    if spot_on_path[0]:
+                        meal_locations[i].append(spot_on_path[1])
+                    else:
+                        meal_locations[i].append(self.bisect_path_meal(start_end_buildings[i][k][0], start_end_buildings[i][k][1]))
+
+     #   print(study_locations)
+        return meal_locations
+
+
+    def find_meal_spot_on_path(self, start_building, end_building):
+        """
+        :param start_building: BUilding user starts at
+        :param end_building: Building user ends up at
+        :return: BUilding user will eat at
+        """
+        start_locations = start_building.entrances()
+        end_locations = end_building.entrances()
+        for i in range(len(start_locations)):
+            for k in range((len(end_locations))):
+                path = get_best_path(self.graph, start_locations[i], end_locations[k])
+                for l in range(len(path[0])):
+                    loc_building = Building.get(path[0][l].building)
+                    if loc_building:
+                        if len(loc_building.restaurants()) > 0:
+                            #print(loc_building)
+                            return True, loc_building
+        return False, ''
+
+    def bisect_path_meal(self, start_building, end_building):
+        """
+        :param start_building: Building user is starting at
+        :param end_building: Building user is ending up at
+        :return: Building user will study at
+        """
+        start_locations = start_building.entrances()
+        end_locations = end_building.entrances()
+
+        min_path_weight = math.inf
+        for i in range(len(start_locations)):
+            for k in range(len(end_locations)):
+                temp_path = get_best_path(self.graph, start_locations[i], end_locations[k])
+                if temp_path[1] < min_path_weight:
+                    best_path = temp_path[0]
+                    min_path_weight = temp_path[1]
+
+        middle_location = best_path[round(len(best_path)/2)]
+
+        all_buildings = Building.query.all()
+        all_restaurants = []
+        for building in all_buildings:
+            if len(building.restaurants()) > 0:
+                all_restaurants.append(building)
+
+
+        min_path_weight = math.inf
+        for i in range(len(all_restaurants)):
+            entrances = all_restaurants[i].entrances()
+            for k in range(len(entrances)):
+                #print(entrances[k])
+                temp_path = get_best_path(self.graph, middle_location, entrances[k])
+                if temp_path[1] < min_path_weight:
+                    best_path = temp_path[0]
+                    min_path_weight = temp_path[1]
+        #visualize_map(path=best_path)
+      #  print(best_path)
+        return Building.get(best_path[len(best_path)-1].building)
 
     #Finds an individual study time
     def find_study_time(self, daily_available, study_length):
@@ -327,8 +426,8 @@ class ScheduleBuilder:
         for i in range(len(start_locations)):
             for k in range((len(end_locations))):
                 path = get_best_path(self.graph, start_locations[i], end_locations[k])
-                for l in range(len(path)):
-                    loc_building = Building.get(path[0][i].building)
+                for l in range(len(path[0])):
+                    loc_building = Building.get(path[0][l].building)
                     if loc_building and loc_building.is_study_location:
                         #print(loc_building)
                         return True, loc_building
