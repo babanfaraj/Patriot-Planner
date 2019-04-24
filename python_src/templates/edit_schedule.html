@@ -50,17 +50,123 @@
 </div>
 
 <div class="container">
+    <h4> Add Class </h4>
+    <form class="input-group" method="POST" action="{{ url_for('edit_schedule') }}">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th id="addcol1" scope="col">Year</th>
+                <th id="addcol2" scope="col">Semester</th>
+                <th id="addcol3" scope="col">Class Name</th>
+                <th id="addcol4" scope="col">Location</th>
+                <th id="addcol5" scope="col">Start Time</th>
+                <th id="addcol6" scope="col">End Time</th>
+                <th id="addcol7" scope="col">Day(s)</th>
+            </tr>
+            </thead>
+            <tbody id="scheduleInput">
+            <tr>
+                <td id="year">
+                    <input required name="year" type="number" min="1900" max="2099" step="1" value="2019" />
+                </td>
+                <td id="semester">
+                    <select required name="semester" aria-label="location" class="custom-select" id="semesterSelect">
+                        <option value="spring">spring</option>
+                        <option value="summer">summer</option>
+                        <option value="fall">fall</option>
+                    </select>
+                </td>
+                <td id="class_name">
+                    <input type="text" name="class_name" required maxlength="10" size="10">
+                </td>
+                <td id="building">
+                    <select required name="building" aria-label="location" class="custom-select" id="inputGroupSelect00">
+                        <option selected value="-1">Location</option>
+                        {% for all_building_names in all_building_names %}
+                        <option value="{{all_building_names}}">{{all_building_names}}</option>
+                        "
+                        {% endfor %}
+                    </select>
+                </td>
+                <td id="start_time">
+                    <input required name="start_time" type="time" placeholder="Start Time" aria-label="start-time">
+                </td>
+                <td id="end_time">
+                    <input required name="end_time" type="time" placeholder="End Time" aria-label="start-time">
+                </td>
+                <td id="week_days">
+                    <div class="form-check">
+                        <div class="form-check form-check-inline">
+                            &ensp;
+                            <input name="M" class="form-check-input" type="checkbox" id="inlineCheckboxM1" value="M">
+                            <label class="form-check-label" for="inlineCheckboxM1">M</label>
+                            &ensp;
+                            <input name="T" class="form-check-input" type="checkbox" id="inlineCheckboxTu1" value="T">
+                            <label class="form-check-label" for="inlineCheckboxTu1">Tu</label>
+                            &ensp;
+                            <input name="W" class="form-check-input" type="checkbox" id="inlineCheckboxW1" value="W">
+                            <label class="form-check-label" for="inlineCheckboxW1">W</label>
+                            &ensp;
+                            <input name="R" class="form-check-input" type="checkbox" id="inlineCheckboxTh1" value="R">
+                            <label class="form-check-label" for="inlineCheckboxTh1">Th</label>
+                            &ensp;
+                            <input name="F" class="form-check-input" type="checkbox" id="inlineCheckboxF1" value="F">
+                            <label class="form-check-label" for="inlineCheckboxF1">F</label>
+                            &ensp;
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="submit">Add Class</button>
+                    </div>
+                </td>
+            </tr>
+
+            </tbody>
+        </table>
+    </form>
+    <h4> Delete Class </h4>
+    <form class="input-group" method="POST" action="{{ url_for('edit_schedule') }}">
+        <select name='del_class_name' class="custom-select" id="inputGroupSelect02" aria-label="Example select with button addon">
+            <option value="-1" selected>Class Name</option>
+            {% for c in cur_classes %}
+            <option value="{{ c.year }} {{ c.semester }} {{ c.class_name }}">{{ c.class_name }}</option>
+            "
+            {% endfor %}
+        </select>
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="submit">Delete Class</button>
+        </div>
+    </form>
+    <h4> All Classes </h4>
     <table class="table table-striped">
         <thead>
         <tr>
-            <th id="col1" scope="col">Class Name</th>
-            <th id="col2" scope="col">Location</th>
-            <th id="col3" scope="col">Start Time</th>
-            <th id="col4" scope="col">End Time</th>
-            <th id="col5" scope="col">Day(s)</th>
+            <th id="curcol1" scope="col">Year</th>
+            <th id="curcol2" scope="col">Semester</th>
+            <th id="curcol3" scope="col">Class Name</th>
+            <th id="curcol4" scope="col">Location</th>
+            <th id="curcol5" scope="col">Start Time</th>
+            <th id="curcol6" scope="col">End Time</th>
+            <th id="curcol7" scope="col">Day(s)</th>
         </tr>
         </thead>
-        <tbody id="scheduleInput">
+        <tbody id="currentSchedule">
+        {% for c in cur_classes %}
+        <tr>
+          <td> {{ c.year }} </td>
+          <td> {{ c.semester }} </td>
+          <td> {{ c.class_name }} </td>
+          <td> {{ c.building }} </td>
+          <td> {{ c.start_time.strftime('%I:%M %p') }} </td>
+          <td> {{ c.end_time.strftime('%I:%M %p') }} </td>
+          <td> {{ c.week_days }} </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+        <!--
         <tr id="block1">
             <td id="event-name1">
                 <input type="text" placeholder="Class Name" aria-label="event-name"
@@ -77,19 +183,13 @@
             </td>
             <td id="start-time1">
                 <input type="time" placeholder="Start Time" aria-label="start-time">
-                <!--               <form class="form-time" method="POST" action="/edit_schedule">
+                               <form class="form-time" method="POST" action="/edit_schedule">
                                    {{ form.hidden_tag() }}
                                    {{ wtf.form_field(form.start_time) }}
-                               </form>-->
+                               </form>
 
             <td id="end-time1">
                 <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
-
-                <!--
-                <form class="form-time" method="POST" action="/edit_schedule">
-                {{ form.hidden_tag() }}
-                    {{ wtf.form_field(form.end_time) }}
-                </form>-->
             </td>
             <td id="checkboxes1">
                 <div class="form-check">
@@ -174,19 +274,10 @@
             </td>
             <td id="start-time3">
                 <input type="time" placeholder="Start Time" aria-label="start-time">
-                <!--               <form class="form-time" method="POST" action="/edit_schedule">
-                                   {{ form.hidden_tag() }}
-                                   {{ wtf.form_field(form.start_time) }}
-                               </form>-->
 
             <td id="end-time3">
                 <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
 
-                <!--
-                <form class="form-time" method="POST" action="/edit_schedule">
-                {{ form.hidden_tag() }}
-                    {{ wtf.form_field(form.end_time) }}
-                </form>-->
             </td>
             <td id="checkboxes3">
                 <div class="form-check">
@@ -229,19 +320,10 @@
             </td>
             <td id="start-time4">
                 <input type="time" placeholder="Start Time" aria-label="start-time">
-                <!--               <form class="form-time" method="POST" action="/edit_schedule">
-                                   {{ form.hidden_tag() }}
-                                   {{ wtf.form_field(form.start_time) }}
-                               </form>-->
 
             <td id="end-time4">
                 <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
 
-                <!--
-                <form class="form-time" method="POST" action="/edit_schedule">
-                {{ form.hidden_tag() }}
-                    {{ wtf.form_field(form.end_time) }}
-                </form>-->
             </td>
             <td id="checkboxes4">
                 <div class="form-check">
@@ -284,19 +366,10 @@
             </td>
             <td id="start-time5">
                 <input type="time" placeholder="Start Time" aria-label="start-time">
-                <!--               <form class="form-time" method="POST" action="/edit_schedule">
-                                   {{ form.hidden_tag() }}
-                                   {{ wtf.form_field(form.start_time) }}
-                               </form>-->
 
             <td id="end-time5">
                 <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
 
-                <!--
-                <form class="form-time" method="POST" action="/edit_schedule">
-                {{ form.hidden_tag() }}
-                    {{ wtf.form_field(form.end_time) }}
-                </form>-->
             </td>
             <td id="checkboxes5">
                 <div class="form-check">
@@ -339,19 +412,10 @@
             </td>
             <td id="start-time6">
                 <input type="time" placeholder="Start Time" aria-label="start-time">
-                <!--               <form class="form-time" method="POST" action="/edit_schedule">
-                                   {{ form.hidden_tag() }}
-                                   {{ wtf.form_field(form.start_time) }}
-                               </form>-->
 
             <td id="end-time6">
                 <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
 
-                <!--
-                <form class="form-time" method="POST" action="/edit_schedule">
-                {{ form.hidden_tag() }}
-                    {{ wtf.form_field(form.end_time) }}
-                </form>-->
             </td>
             <td id="checkboxes6">
                 <div class="form-check">
@@ -394,19 +458,10 @@
             </td>
             <td id="start-time7">
                 <input type="time" placeholder="Start Time" aria-label="start-time">
-                <!--               <form class="form-time" method="POST" action="/edit_schedule">
-                                   {{ form.hidden_tag() }}
-                                   {{ wtf.form_field(form.start_time) }}
-                               </form>-->
 
             <td id="end-time7">
                 <input type="time" placeholder="End Time" aria-label="end-time" class=".col-sm-form-control">
 
-                <!--
-                <form class="form-time" method="POST" action="/edit_schedule">
-                {{ form.hidden_tag() }}
-                    {{ wtf.form_field(form.end_time) }}
-                </form>-->
             </td>
             <td id="checkboxes7">
                 <div class="form-check">
@@ -432,12 +487,12 @@
 
             </td>
         </tr>
-
         </tbody>
     </table>
     <button type="button" onClick="createRow()" value="Create Row" class="btn btn-secondary">+ Add Another Time Block
     </button>
     <button type="button" onClick="saveSchedule()" value="save" class="btn btn-primary">Save</button>
+        -->
 </div>
 
 </body>

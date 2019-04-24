@@ -111,14 +111,54 @@ def new_route():
         return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath[0]), all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
 
 
-@app.route('/edit_schedule', methods=['GET'])
+@app.route('/edit_schedule', methods=['GET', 'POST'])
 @login_required
 def edit_schedule():
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
     print(all_building_names)
     tf = TimeForm()
-    return render_template("edit_schedule.html", form=tf, all_building_names=all_building_names)
+
+    if request.method == 'POST':
+        del_class_name = request.form.get('del_class_name')
+        if del_class_name is not None and del_class_name != '-1':
+            year, semester, class_name = del_class_name.split(' ')
+            current_user.delete_class(year, semester, class_name)
+
+        year = request.form.get('year')
+        semester = request.form.get('semester')
+        building = request.form.get('building')
+        week_days = [request.form.get(_) for _ in 'MTWRF'
+                     if request.form.get(_) is not None]
+        start_time = request.form.get('start_time')
+        end_time = request.form.get('end_time')
+        class_name = request.form.get('class_name')
+
+        is_invalid = False
+        for _ in [year, semester, building, start_time, end_time]:
+            # check to make sure each input is filled in
+            if _ is None or _ == '-1':
+                is_invalid = True
+                break
+        if len(week_days) < 1:
+            is_invalid = True
+
+        if not is_invalid:
+            try:
+                current_user.add_class(year=year, semester=semester,
+                                       class_name=class_name,
+                                       building=building,
+                                       start_time=start_time,
+                                       end_time=end_time,
+                                       week_days=''.join(week_days))
+            except Exception as ex:
+                pass
+
+    return render_template("edit_schedule.html", form=tf,
+                           cur_classes=sorted(current_user.all_classes(),
+                                              key=lambda _: _.year + _.semester + str(_.start_time),
+                                              reverse=True),
+                           all_building_names=all_building_names)
 
 
 @app.route('/settings', methods=['GET', 'POST'])
@@ -155,3 +195,4 @@ def gmaps_redirect(start_building_name, end_building_name):
     loc2 = StudyInfo('01:00:00', '00:00:00', end_building_name)
     paths = find_optimal_class_path(graph, [loc1, loc2])
     return redirect(path_to_gmaps_link(paths[0]))
+
