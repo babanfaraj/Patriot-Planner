@@ -126,7 +126,7 @@ class ScheduleBuilder:
                 end_minute = round((weekly_meal_times[i][k][1] - end_hour) * 60.0)
                 start_time = datetime.time(start_hour, start_minute)
                 end_time = datetime.time(end_hour, end_minute)
-                meal_info = MealInfo(start_time, end_time, all_meal_locations[i][k])
+                meal_info = MealInfo(start_time, end_time, all_meal_locations[i][k].building_name)
                 weekly_schedule[i].append(meal_info)
         print(all_meal_locations)
         print(weekly_meal_times)
@@ -481,5 +481,3 @@ class ScheduleBuilder:
                 index = i
         return index
 
-s = ScheduleBuilder(get_graph())
-a = s.build_schedule("cguerra5@masonlive.gmu.edu", "spring", "2018")
