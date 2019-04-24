@@ -93,18 +93,66 @@ class ScheduleBuilder:
 
     def add_meals(self, weekly_schedule, cur_student):
         meal_prefs = cur_student.meal_preference()
+        study_prefs = cur_student.study_preference()
+        break_time = study_prefs.break_time_hours
         earliest_time = meal_prefs.earliest_time.hour + meal_prefs.earliest_time.minute/60.0
         latest_time = meal_prefs.latest_time.hour + meal_prefs.latest_time.minute / 60.0
+        num_meals = meal_prefs.daily_meal_num
+        max_time = meal_prefs.max_meal_hours
+        min_time = meal_prefs.min_meal_hours
+
         unavailable_times = self.find_unavailable_times(weekly_schedule, earliest_time, latest_time)
-        print(unavailable_times)
-        for i in range(len(weekly_schedule)):
-            self.fill_meals(weekly_schedule[i], meal_prefs)
+        weekly_meal_times = [[], [], [], [], []]
+      #  print(unavailable_times)
+        day = 0
+        time = max_time
+        while(day < 5 and time >= min_time):
+            weekly_meal_times[day] = []
+            daily_available = self.find_available_times(unavailable_times[day], time, break_time)
+            weekly_meal_times[day] = self.find_meal_times(daily_available, time, num_meals)
+            if len(weekly_meal_times[day]) == num_meals:
+                day += 1
+                time = max_time
+            else:
+                time -= 5
 
-        print(meal_prefs)
+  #      all_meal_locations = self.map_building_to_meal_time(weekly_schedule, weekly_meal_times)
+        print(weekly_meal_times)
+        Building.print_all()
+        b = Building.get('Johnson Center')
+        print(b.restaurants())
+
+   #     print(all_meal_locations)
 
 
-    def fill_meals(self, daily_schedule, meal_prefs):
-        print('fuhget about it')
+    def find_meal_times(self, daily_available, meal_length, num_meals):
+        """
+        :param daily_available: All available slots in a day
+        :param study_length: Length of study session
+        :return: Daily meals
+        """
+        possible_time = []
+        for available_time in daily_available:
+            middle = (available_time[1] - available_time[0])/2
+            possible_time.append((available_time[0], available_time[0] + meal_length))
+            possible_time.append((available_time[0] + middle, available_time[0] + middle + meal_length))
+            possible_time.append((available_time[1] - meal_length, available_time[1]))
+        # print(possible_time)
+        lunch = possible_time[round((len(possible_time) - 1) / 2)]
+        breakfast = possible_time[0]
+        dinner = possible_time[len(possible_time)-1]
+
+        meals = []
+        if(num_meals == 3):
+            meals.append(breakfast)
+        if(num_meals >= 1):
+            meals.append(lunch)
+        if(num_meals >= 2):
+            meals.append(dinner)
+
+        return meals
+
+
 
     #Finds an individual study time
     def find_study_time(self, daily_available, study_length):
