@@ -274,7 +274,7 @@ class Edge(db.Model):
 
 
 class Restaurant(db.Model):
-    __tablename__ = 'resturant'
+    __tablename__ = 'restaurant'
     building = db.Column(db.String(25), db.ForeignKey('building.building_name'),
                          primary_key=True)
     restaurant_name = db.Column(db.String(25), primary_key=True)
@@ -287,7 +287,7 @@ class Restaurant(db.Model):
 
     def __repr__(self):
         rep = 'Restaurant(building={}, restaurant_name={})'
-        return rep.format(self.location, self.restaurant_name)
+        return rep.format(self.building, self.restaurant_name)
 
 
 class ClassTime(db.Model):
@@ -396,6 +396,10 @@ class MealTime(db.Model):
                           self.min_meal_hours, self.max_meal_hours,
                           self.earliest_time, self.latest_time)
 
+    @staticmethod
+    def get(student_email):
+        return MealTime.query.filter_by(student_email=student_email).first()
+
 
 class StudyInfo:
     def __init__(self, start_time, end_time, building):
@@ -406,6 +410,17 @@ class StudyInfo:
 
     def __repr__(self):
         return f'StudyInfo({self.start_time}, {self.end_time}, {self.building}, {self.class_name})'
+
+
+class MealInfo:
+    def __init__(self, start_time, end_time, building):
+        self.start_time = start_time
+        self.end_time = end_time
+        self.building = building
+        self.class_name = 'Meal Time'
+
+    def __repr__(self):
+        return f'MealInfo({self.start_time}, {self.end_time}, {self.building}, {self.class_name})'
 
 
 def get_graph(include_inactive_edges=False):
