@@ -96,7 +96,7 @@ def new_route():
         print("Start Location:", start_loc)
         print("End Location:", end_loc)
         start = None
-        end   = None
+        end = None
         for currentNode in get_graph().keys():
             if currentNode.building == start_loc:
                 start = currentNode
@@ -108,7 +108,8 @@ def new_route():
         bestpath = get_best_path(get_graph(), start, end)
         if bestpath is not None:
             display_path(path_to_gmaps_link(bestpath[0]))
-        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath[0]), all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
+        return render_template("new_route.html", gmaps_link=path_to_gmaps_link(bestpath[0]),
+                               all_building_names=all_building_names, start_loc=start_loc, end_loc=end_loc)
 
 
 @app.route('/edit_schedule', methods=['GET', 'POST'])
@@ -177,7 +178,8 @@ def settings():
     if reset_account_form.reset_account_confirmation.data == 'reset':
         current_user.reset_account()
         print("Reset ACCOUNT")
-    return render_template("settings.html",  form=form, title="password_change", delete_account_form=delete_account_form, reset_account_form=reset_account_form)
+    return render_template("settings.html",  form=form, title="password_change",
+                           delete_account_form=delete_account_form, reset_account_form=reset_account_form)
 
 
 @app.route('/logout')
