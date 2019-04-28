@@ -24,7 +24,7 @@
             {{ wtf.form_field(form.password) }}
             {{ wtf.form_field(form.confirm_password) }}
             <button class="btn btn-lg btn-primary btn-block" type="submit">Create Account</button>
-            <button type="button" class="btn btn-secondary btn-lg btn-block" onclick="window.location.href = '{{ url_for('login') }}';">Cancel</button>
+            <button type="button" class="btn btn-secondary btn-lg btn-block" name="login" onclick="window.location.href = '{{ url_for('login') }}';">Cancel</button>
         </form>
     </div>
 </div>
