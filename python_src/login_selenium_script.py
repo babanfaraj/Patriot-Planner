@@ -1,7 +1,8 @@
 from selenium import webdriver
 import time
 
-driver = webdriver.Chrome()
+driver = webdriver.Chrome("C:/Users/Baban Faraj/Documents/College/CS321/project/drivers/chromedriver.exe")
+#driver = webdriver.Chrome("project/drivers/chromedriver.exe")
 
 driver.set_page_load_timeout(10)
 driver.get("http://127.0.0.1:5000/")
