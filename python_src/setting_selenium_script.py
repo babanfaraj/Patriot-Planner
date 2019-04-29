@@ -41,3 +41,13 @@ driver.find_element_by_name("new_password").send_keys("password")
 driver.find_element_by_name("confirm_new_password").send_keys("password")
 driver.find_element_by_name("submit").click()
 time.sleep(1)
+
+
+#Test Four:  User enters 'reset' for resetting account
+driver.get("http://127.0.0.1:5000/settings")
+driver.find_element_by_name("reset_account_confirmation").send_keys("reset")
+driver.find_element_by_name("reset_btn").click()
+time.sleep(1)
+
+
+
