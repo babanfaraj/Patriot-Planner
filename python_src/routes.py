@@ -71,7 +71,10 @@ def create_account():
 @app.route('/home', methods=['GET'])
 @login_required
 def home():
-    todays_schedule = get_weekly_schedule_study(current_user)[datetime.today().weekday()]
+    if datetime.today().weekday() < 5:
+        todays_schedule = get_weekly_schedule_study(current_user)[datetime.today().weekday()]
+    else:
+        todays_schedule = []
     todays_schedule.sort(key=lambda _: _.start_time)
     all_buildings = Building.query.all()
     all_building_names = [_.building_name for _ in all_buildings]
