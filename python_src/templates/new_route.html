@@ -4,6 +4,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
           integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/login.css"/>
     <title>New Route - Patriot Planner</title>
 </head>
 <body>
@@ -45,7 +46,7 @@
     </nav>
 </div>
 
-<div class="container half-width">
+<div class="container">
     <h5 style="text-align:center;"> Need to go somewhere else?</h5>
     <!--    <div class="input-group">-->
     <!--        <select class="custom-select" id="inputGroupSelect03" aria-label="Example select with button addon" method="GET"-->
@@ -58,39 +59,39 @@
     <!--        </select>-->
     <!--    </div>-->
 
-
-    <form class="form-inline" method="POST" action="{{ url_for('new_route') }}">
-        <div class="form-group">
-            <div class="input-group">
-                <span class="input-group-addon">Please select</span>
-                <select name="start_loc" class="selectpicker form-control">
-                    <option selected>Starting Point</option>
-                    {% for all_building_names in all_building_names %}
-                    <option value="{{all_building_names}}">{{all_building_names}}</option>
-                    "
-                    {% endfor %}
-                </select>
-            </div>
-            <button type="submit" class="btn btn-default">Go</button>
-        </div>
+    <div class="container half-width" style="margin-left: 23%;">
         <form class="form-inline" method="POST" action="{{ url_for('new_route') }}">
             <div class="form-group">
                 <div class="input-group">
-                    <span class="input-group-addon">Please select</span>
-                    <select name="end_loc" class="selectpicker form-control">
-                        <option selected>End Point</option>
+                    <span class="input-group-addon">From</span> &nbsp;
+                    <select name="start_loc" class="selectpicker form-control">
+                        <option selected>Starting Point</option>
                         {% for all_building_names in all_building_names %}
                         <option value="{{all_building_names}}">{{all_building_names}}</option>
                         "
                         {% endfor %}
                     </select>
-                </div>
-                <button type="submit" class="btn btn-default">Go</button>
+                </div> &nbsp;
+                <!--<button type="submit" class="btn btn-default">Go</button>-->
             </div>
+            <form class="form-inline" method="POST" action="{{ url_for('new_route') }}">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon"> To </span> &nbsp;
+                        <select name="end_loc" class="selectpicker form-control">
+                            <option selected>End Point</option>
+                            {% for all_building_names in all_building_names %}
+                            <option value="{{all_building_names}}">{{all_building_names}}</option>
+                            "
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Go</button>
+                </div>
+            </form>
         </form>
-    </form>
-
-    <a href="{{ gmaps_link }}"> Goto Google Maps </a>
+    </div>
+    <!--<a href="{{ gmaps_link }}"> Goto Google Maps </a>-->
 
 
     <!--    <div class="input-group">-->
