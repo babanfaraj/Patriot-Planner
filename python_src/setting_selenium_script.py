@@ -43,11 +43,17 @@ driver.find_element_by_name("submit").click()
 time.sleep(1)
 
 
-#Test Four:  User enters 'reset' for resetting account
+#Test Four:  User enters valid 'reset' for resetting account
 driver.get("http://127.0.0.1:5000/settings")
 driver.find_element_by_name("reset_account_confirmation").send_keys("reset")
 driver.find_element_by_name("reset_btn").click()
 time.sleep(1)
 
+
+#Test Four:  User enters  invalid 'DONT RESETS' for resetting account
+driver.get("http://127.0.0.1:5000/settings")
+driver.find_element_by_name("reset_account_confirmation").send_keys("DONT RESETS")
+driver.find_element_by_name("reset_btn").click()
+time.sleep(1)
 
 
